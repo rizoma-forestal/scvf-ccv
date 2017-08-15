@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content"> 
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Administración de Usuarios del Sistema</h1>
+                <p style="color: #4a4a4a">Desde aquí podrá gestionar los Usuarios del Sistema</p>
+            </b:jumbotron>
+            <br></br>
+            <h:panelGrid id="pgGral" columns="1" style="margin: 0 auto;">
+                <p:growl id="messages" showDetail="false" />
+                <h:form prependId="false" id="frUsuario">
+                    <!-- Formulario new y edit -->
+                    <b:panel collapsed="#{!mbUsuario.edit or mbUsuario.view}" rendered="#{mbUsuario.edit and !mbUsuario.view}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Crear nuevo o editar existente" size="3x" />
+                        </f:facet>
+                        <b:row id="rwNewEdit" >
+                            <b:column span="12">
+                                <h:panelGrid id="pgNewEdit" columns="1" style="margin: 0 auto;" >
+                                    <b:inputText id="dni" value="#{mbUsuario.usuario.login}" label="DNI" 
+                                                 placeholder="DNI del Usuario" 
+                                                 tooltip="Ingrese el DNI del Usuario" />
+                                    <b:inputText id="nombre" value="#{mbUsuario.usuario.nombreCompleto}" label="Apellido y nombres" 
+                                                 placeholder="Nombre comleto" style="text-transform: uppercase; width: 300px" 
+                                                 tooltip="Ingrese el Apellido y nombres del Usuario" />
+                                    <b:inputText id="email" value="#{mbUsuario.usuario.correoElectronico}" label="Correo electrónico" 
+                                                 placeholder="Correo electrónico del Usuario" 
+                                                 tooltip="Ingrese el correo electrónico para remitir credenciales." />
+                                    <b:selectOneMenu label="Rol" id="cmbRol" value="#{mbUsuario.idRol}" >
+                                        <f:selectItem itemLabel="Seleccione el Rol" itemValue="" noSelectionOption="true" />  
+                                        <f:selectItems value="#{mbUsuario.lstRoles}" var="rol" 
+                                                       itemLabel="#{rol.nombre}" itemValue="#{rol.id}"/>
+                                    </b:selectOneMenu>
+                                    <b:selectOneMenu label="Puesto de Control" id="cmbPuesto" value="#{mbUsuario.idPuesto}" >
+                                        <f:selectItem itemLabel="Seleccione el Puesto" itemValue="" noSelectionOption="true" />  
+                                        <f:selectItems value="#{mbUsuario.lstPuestos}" var="puesto" 
+                                                       itemLabel="#{puesto.nombre}" itemValue="#{puesto.id}"/>
+                                    </b:selectOneMenu>
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <h:panelGrid columns="2" style="margin: 0 auto;">
+                            <b:commandButton 
+                                action="#{mbUsuario.save()}" style="margin-right: 3px"
+                                value="Guardar"
+                                look="success" tooltip="Guardar los datos consignados" 
+                                iconAwesome="fa-check-circle" 
+                                update="frUsuario,messages" 
+                                ajax="true" />
+                            <b:commandButton 
+                                action="#{mbUsuario.limpiarForm()}" style="margin-left: 3px"
+                                value="Limpiar"
+                                look="danger" tooltip="Limpiar datos" 
+                                iconAwesome="fa-refresh" 
+                                update="frUsuario,messages" 
+                                ajax="true" />
+                        </h:panelGrid>
+                    </b:panel>
+                    
+                    <!-- Formulario view -->
+                    <b:panel collapsed="#{!mbUsuario.view or mbUsuario.edit}" rendered="#{!mbUsuario.edit and mbUsuario.view}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Ver el detalle del Usuario seleccionado" size="3x" />
+                        </f:facet>
+                        <b:row id="rwView" >
+                            <b:column span="12">
+                                <h:panelGrid id="pgDatosGrales" columns="2" >
+                                    <p:outputLabel value="Id: " for="v_id" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_id" value="#{mbUsuario.usuario.id}"/>
+                                    <p:outputLabel value="DNI: " for="v_dni" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_dni" value="#{mbUsuario.usuario.login}"/>
+                                    <p:outputLabel value="Nombre completo: " for="v_nombre" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_nombre" value="#{mbUsuario.usuario.nombreCompleto}"/>
+                                    <p:outputLabel value="Correo electrónico: " for="v_email" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_email" value="#{mbUsuario.usuario.correoElectronico}"/>
+                                    <p:outputLabel value="Rol: " for="v_rol" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_rol" value="#{mbUsuario.usuario.rol.nombre}"/>
+                                    <p:outputLabel value="Puesto: " for="v_puesto" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_puesto" value="#{mbUsuario.usuario.puestoControl.nombre}"/>
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                    
+                    <!-- Listado -->
+                    <b:panel collapsible="false" >
+                        <f:facet name="heading">
+                            <h:panelGrid id="pgFacet" columns="2" >
+                                <b:label text="Usuarios registrados" style="font-size: 20px;"/>
+                                <b:commandButton action="#{mbUsuario.prepareNew()}" icon="view" ajax="true" style="margin-left: 10px" 
+                                                         update="frUsuario" iconAwesome="fa-plus-square " look="primary" tooltip="Cargar nuevo" />
+                            </h:panelGrid>
+                        </f:facet>
+                        <b:row id="rwList" >
+                            <b:column span="12">
+                                <b:dataTable value="#{mbUsuario.lstUsuarios}" var="us" >
+                                    <b:dataTableColumn value="#{us.id}" label="Id" />
+                                    <b:dataTableColumn value="#{us.login}" label="DNI" />
+                                    <b:dataTableColumn value="#{us.nombreCompleto}" label="Nombre completo" />
+                                    <b:dataTableColumn value="#{us.correoElectronico}" label="Correo electrónico" />
+                                    <b:dataTableColumn value="#{us.rol.nombre}" label="Rol" />
+                                    <b:dataTableColumn value="#{us.puestoControl.nombre}" label="Puesto" />
+                                    <b:dataTableColumn value="#{us.habilitado ? 'Habilitado': 'Deshabilitado'}" label="Estado" />
+                                    <b:dataTableColumn label="Acciones" style="width: 115px">
+                                        <b:commandButton action="#{mbUsuario.prepareView()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frUsuario" iconAwesome="fa-search-plus" look="default" tooltip="Ver detalle" >
+                                            <f:setPropertyActionListener value="#{us}" target="#{mbUsuario.usuario}" />
+                                        </b:commandButton>
+                                        <b:commandButton action="#{mbUsuario.prepareEdit()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frUsuario" iconAwesome="fa-pencil" look="warning" tooltip="Editar" >
+                                            <f:setPropertyActionListener value="#{us}" target="#{mbUsuario.usuario}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{us.habilitado}" action="#{mbUsuario.deshabilitar()}" icon="view" ajax="true"
+                                                         update="frUsuario" iconAwesome="fa-minus-square " look="danger" tooltip="Deshabilitar" >
+                                            <f:setPropertyActionListener value="#{us}" target="#{mbUsuario.usuario}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{!us.habilitado}" action="#{mbUsuario.habilitar()}" icon="view" ajax="true"
+                                                         update="frUsuario" iconAwesome="fa-plus-square" look="success" tooltip="Habilitar" >
+                                            <f:setPropertyActionListener value="#{us}" target="#{mbUsuario.usuario}" />
+                                        </b:commandButton>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                </h:form>
+            </h:panelGrid>
+        </ui:define> 
+    </ui:composition>
+</html>      

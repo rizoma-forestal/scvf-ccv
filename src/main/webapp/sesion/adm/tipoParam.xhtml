@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content"> 
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Administración de Tipos de Paramétricas</h1>
+                <p style="color: #4a4a4a">Desde aquí podrá gestionar los Tipos de Paramétricas de la aplicación.</p>
+
+            </b:jumbotron>
+            <br></br>
+            <h:panelGrid id="pgGral" columns="1" style="margin: 0 auto;">
+                <p:growl id="messages" showDetail="false" />
+                <h:form prependId="false" id="frTipoParam">
+                    <!-- Formulario new y edit -->
+                    <b:panel collapsed="#{!mbParametrica.edit or mbParametrica.view}" rendered="#{mbParametrica.edit and !mbParametrica.view}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Crear nuevo o editar existente" size="3x" />
+                        </f:facet>
+                        <b:row id="rwNewEdit" >
+                            <b:column span="12">
+                                <b:inputText id="nombre" value="#{mbParametrica.tipoParam.nombre}" label="Nombre" 
+                                             placeholder="Nombre del Tipo" 
+                                             tooltip="Ingrese el nombre del Tipo de Paramétrica" style="text-transform: uppercase" />
+                            </b:column>
+                        </b:row>
+                        <h:panelGrid columns="2" style="margin: 0 auto;">
+                            <b:commandButton 
+                                action="#{mbParametrica.saveTipoParam()}" style="margin-right: 3px"
+                                value="Guardar"
+                                look="success" tooltip="Guardar los datos consignados" 
+                                iconAwesome="fa-check-circle" 
+                                update="frTipoParam,messages" 
+                                ajax="true" />
+                            <b:commandButton 
+                                action="#{mbParametrica.limpiarFormTipoParam()}" style="margin-left: 3px"
+                                value="Limpiar"
+                                look="danger" tooltip="Limpiar datos" 
+                                iconAwesome="fa-refresh" 
+                                update="frTipoParam,messages" 
+                                ajax="true" />
+                        </h:panelGrid>
+                    </b:panel>
+
+                    
+                    <!-- Formulario view -->
+                    <b:panel collapsed="#{!mbParametrica.view or mbParametrica.edit}" rendered="#{mbParametrica.view and !mbParametrica.edit}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Ver el detalle del Tipo seleccionado" size="3x" />
+                        </f:facet>
+                        <b:row id="rwView" >
+                            <b:column span="12">
+                                <h:panelGrid id="pgDatosGrales" columns="2" >
+                                    <p:outputLabel value="Id: " for="v_id" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_id" value="#{mbParametrica.tipoParam.id}"/>
+                                    <p:outputLabel value="Nombre: " for="v_nombre" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_nombre" value="#{mbParametrica.tipoParam.nombre}"/>
+                                    <p:outputLabel value="Habilitado: " for="v_habilitado" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_habilitado" value=" #{mbParametrica.tipoParam.habilitado}"  />
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                    
+                    <!-- Listado -->
+                    <b:panel collapsible="false" >
+                        <f:facet name="heading">
+                            <h:panelGrid id="pgFacet" columns="2" >
+                                <b:label text="Tipos de Parámetros registrados" style="font-size: 20px;"/>
+                                <b:commandButton action="#{mbParametrica.prepareNewTipoParam()}" icon="view" ajax="true" style="margin-left: 10px" 
+                                                         update="frTipoParam" iconAwesome="fa-plus-square " look="primary" tooltip="Cargar nuevo" />
+                            </h:panelGrid>
+                        </f:facet>
+                        <b:row id="rwList" >
+                            <b:column span="12">
+                                <b:dataTable value="#{mbParametrica.lstTipoParam}" var="tipo" >
+                                    <b:dataTableColumn value="#{tipo.id}" label="Id" />
+                                    <b:dataTableColumn value="#{tipo.nombre}" label="Nombre" />
+                                    <b:dataTableColumn value="#{tipo.habilitado ? 'Habilitado': 'Deshabilitado'}" label="Estado" />
+                                    <b:dataTableColumn label="Acciones" style="width: 75px">
+                                        <b:commandButton action="#{mbParametrica.prepareView()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frTipoParam" iconAwesome="fa-search-plus" look="default" tooltip="Ver detalle" >
+                                            <f:setPropertyActionListener value="#{tipo}" target="#{mbParametrica.tipoParam}" />
+                                        </b:commandButton>
+                                        <b:commandButton action="#{mbParametrica.prepareEdit()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frTipoParam" iconAwesome="fa-pencil" look="warning" tooltip="Editar" >
+                                            <f:setPropertyActionListener value="#{tipo}" target="#{mbParametrica.tipoParam}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{tipo.habilitado}" action="#{mbParametrica.deshabilitarTipoParam()}" icon="view" ajax="true"
+                                                         update="frTipoParam" iconAwesome="fa-minus-square " look="danger" tooltip="Deshabilitar" >
+                                            <f:setPropertyActionListener value="#{tipo}" target="#{mbParametrica.tipoParam}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{!tipo.habilitado}" action="#{mbParametrica.habilitarTipoParam()}" icon="view" ajax="true"
+                                                         update="frTipoParam" iconAwesome="fa-plus-square" look="success" tooltip="Habilitar" >
+                                            <f:setPropertyActionListener value="#{tipo}" target="#{mbParametrica.tipoParam}" />
+                                        </b:commandButton>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                </h:form>
+            </h:panelGrid>
+        </ui:define> 
+    </ui:composition>
+</html>  

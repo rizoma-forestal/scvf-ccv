@@ -1,0 +1,343 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content">   
+            <p:growl id="messages" showDetail="false" />
+            <b:modal id="mdResultado" title="Seleccione el resultado, de ser necesario consigne observaciones. 
+                     Fianalmente guarde los datos mediante el botón 'Registrar Control'" styleClass="mdResultadoClass">
+                <h:form id="frmControl" >
+                    <b:panel rendered="#{mbControl.control.id eq null}">
+                        <b:row >
+                            <b:column span="12">
+                                <h:panelGrid columns="1" style="margin: 0 auto;">
+                                    <b:selectOneMenu label="" id="cmbResult" value="#{mbControl.result}" >
+                                        <f:selectItem itemLabel="Seleccione el resultado del Control" itemValue="" noSelectionOption="true" />  
+                                        <f:selectItems value="#{mbControl.lstResultados}" var="result" 
+                                                       itemLabel="#{result.nombre}" itemValue="#{result.id}"/>
+                                    </b:selectOneMenu>
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <b:row >
+                            <b:column span="12">
+                                <b:inputTextarea value="#{mbControl.obs}" rows="3" span="12" placeholder="Observaciones" 
+                                                 tooltip="Ingrese las observaciones que crea neceario" />
+                            </b:column>
+                        </b:row>
+                        <b:row >
+                            <b:column span="12">
+                                <h:panelGrid columns="2" style="margin: 0 auto;">
+                                    <b:commandButton value="Registrar Control" look="success" 
+                                                     action="#{mbControl.saveControl()}" tooltip="Registrar el Control de la Guía" 
+                                                     update="frmControl,frmResult,messages" ajax="true" oncomplete="PF('mdResultadoClass').hide();" style="margin-right: 5px" />
+                                    <b:commandButton value="Limpiar" look="warning" tooltip="Limpiar los datos consignados"
+                                                     action="#{mbControl.limpiarFrmRegControl()}" 
+                                                     update="frmControl" style="margin-left: 5px" />
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                    <h:panelGrid rendered="#{mbControl.control.id ne null}" columns="1" style="margin: 0 auto; margin-top: 10px" >
+                        <b:row >
+                            <b:label severity="success" text="El resultado del control fue: #{mbControl.control.resultado.nombre}" style="font-size: 20px;"/>
+                        </b:row>
+                        <b:row style="padding-top:15px">
+                            <b:label severity="success" text="Con fecha: #{mbControl.control.fechaHora}" style="font-size: 20px;"/>
+                        </b:row>
+                        <b:row style="margin-top: 10px">
+                            <p:outputLabel value="Observaciones: #{mbControl.obs}" style="font-weight: normal; color: #4a4a4a"/>
+                        </b:row>
+                    </h:panelGrid>
+                </h:form>
+                <f:facet name="footer">
+                    <b:button value="Cerrar" dismiss="modal" />
+                </f:facet>
+            </b:modal>
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Control de Guías de transporte</h1>
+                <p style="color: #4a4a4a">Por favor, seleccione los parámetros que desea utilizar para realizar la búsqueda:<br></br>
+                Matrícula del Vehículo, Código de Guía, Cuit del Remitente de la Guía o Cuit del Destinatario</p>
+
+            </b:jumbotron>
+            <b:navBar brand="Consutar por" brandHref="#" >
+                <b:navbarLinks>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Matrícula" action="#{mbControl.prepareFrmMat()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Código" action="#{mbControl.prepareFrmCodigo()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="CUIT Remitente" action="#{mbControl.prepareFrmCuitRem()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="CUIT Destinatario" action="#{mbControl.prepareFrmCuitDest()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Controles" action="#{mbControl.prepareFrmControles()}"></b:navCommandLink>
+                </b:navbarLinks>
+            </b:navBar>
+            <h:panelGrid id="pgGral" columns="1" style="margin: 0 auto;">
+                <b:row id="rwGral" rendered="#{not mbControl.verControles}" >
+                    <b:column span="12">
+                        <h:form id="frmConsulta" >
+                            <!-- Formulario Matrícula -->
+                            <b:row rendered="#{mbControl.verPorMatricula}" style="margin-top: 10px" >
+                                <b:column span="12">
+                                    <h:panelGrid columns="1" style="margin: 0 auto;">
+                                        <b:inputText id="mat" value="#{mbControl.matricula}" 
+                                                   class="itext-mat" 
+                                                   placeholder="Matricula" tooltip="Ingrese la Matrícula a Verificar" >
+                                            <f:facet name="prepend">
+                                                <b:commandButton 
+                                                    action="#{mbControl.limpiarResult()}" 
+                                                    style="height: 48px !Important;" 
+                                                    look="danger" tooltip="Limpiar la Matrícula ingresada" 
+                                                    iconAwesome="fa-refresh" 
+                                                    icon-size="2x" 
+                                                    update="frmConsulta,frmResult" 
+                                                    ajax="true" />
+                                            </f:facet>
+                                            <f:facet name="append">
+                                                <b:commandButton 
+                                                    style="height: 48px !Important;" 
+                                                    tooltip="Consultar Guía por Matrícula de Vehículo" 
+                                                    action="#{mbControl.consultarGuiaMat()}" 
+                                                    look="primary" 
+                                                    ajax="true" 
+                                                    update="frmConsulta,frmResult" 
+                                                    iconAwesome="fa-question-circle" 
+                                                    icon-size="2x" 
+                                                    icon-align="right"/>
+                                            </f:facet>
+                                        </b:inputText>
+                                    </h:panelGrid>
+                                </b:column>
+                            </b:row>
+                            <!-- Formulario Código -->
+                            <b:row rendered="#{mbControl.verPorCodigo}" style="margin-top: 10px" >
+                                <b:column span="12">
+                                    <h:panelGrid columns="1" style="margin: 0 auto;">
+                                        <b:inputText id="cod" value="#{mbControl.codigo}" 
+                                                   class="itext-mat" 
+                                                   placeholder="Codigo" tooltip="Ingrese el Código de la Guía a Verificar" >
+                                            <f:facet name="prepend">
+                                                <b:commandButton 
+                                                    action="#{mbControl.limpiarResult()}" 
+                                                    style="height: 48px !Important;" 
+                                                    look="danger" tooltip="Limpiar el Código de la Guía ingresado" 
+                                                    iconAwesome="fa-refresh" 
+                                                    icon-size="2x" 
+                                                    update="frmConsulta,frmResult" 
+                                                    ajax="true" />
+                                            </f:facet>
+                                            <f:facet name="append">
+                                                <b:commandButton 
+                                                    style="height: 48px !Important;" 
+                                                    tooltip="Consultar por el Código de Guía" 
+                                                    action="#{mbControl.consultarGuiaCod()}" 
+                                                    look="primary" 
+                                                    ajax="true" 
+                                                    update="frmConsulta,frmResult" 
+                                                    iconAwesome="fa-question-circle" 
+                                                    icon-size="2x" 
+                                                    icon-align="right"/>
+                                            </f:facet>
+                                        </b:inputText>
+                                    </h:panelGrid>
+                                </b:column>
+                            </b:row>
+                            <!-- Formulario Cuit Remitente -->
+                            <b:row rendered="#{mbControl.verPorCuitRem}" style="margin-top: 10px" >
+                                <b:column span="12">
+                                    <h:panelGrid columns="1" style="margin: 0 auto;">
+                                        <b:inputText id="cuitRem" value="#{mbControl.cuitRem}" 
+                                                   class="itext-mat" 
+                                                   placeholder="CUIT Remitente" tooltip="Ingrese el CUIT del Remitente (sin -) para ver sus Guías vigentes" >
+                                            <f:facet name="prepend">
+                                                <b:commandButton 
+                                                    action="#{mbControl.limpiarResult()}" 
+                                                    style="height: 48px !Important;" 
+                                                    look="danger" tooltip="Limpiar el CUIT ingresado" 
+                                                    iconAwesome="fa-refresh" 
+                                                    icon-size="2x" 
+                                                    update="frmConsulta,frmResult" 
+                                                    ajax="true" />
+                                            </f:facet>
+                                            <f:facet name="append">
+                                                <b:commandButton 
+                                                    style="height: 48px !Important;" 
+                                                    tooltip="Consultar Guías vigentes según el CUIT del Remitente" 
+                                                    action="#{mbControl.consultarGuiasPorRem()}" 
+                                                    look="primary" 
+                                                    ajax="true" 
+                                                    update="frmConsulta,frmResult" 
+                                                    iconAwesome="fa-question-circle" 
+                                                    icon-size="2x" 
+                                                    icon-align="right"/>
+                                            </f:facet>
+                                        </b:inputText>
+                                    </h:panelGrid>
+                                </b:column>
+                            </b:row>
+                            <!-- Formulario Cuit Remitente -->
+                            <b:row rendered="#{mbControl.verPorCuitDest}" style="margin-top: 10px" >
+                                <b:column span="12">
+                                    <h:panelGrid columns="1" style="margin: 0 auto;">
+                                        <b:inputText id="cuitDest" value="#{mbControl.cuitDest}" 
+                                                   class="itext-mat" 
+                                                   placeholder="CUIT Destinatario" tooltip="Ingrese el CUIT del Destintatario (sin -) para ver sus Guías vigentes" >
+                                            <f:facet name="prepend">
+                                                <b:commandButton 
+                                                    action="#{mbControl.limpiarResult()}" 
+                                                    style="height: 48px !Important;" 
+                                                    look="danger" tooltip="Limpiar el CUIT ingresado" 
+                                                    iconAwesome="fa-refresh" 
+                                                    icon-size="2x" 
+                                                    update="frmConsulta,frmResult" 
+                                                    ajax="true" />
+                                            </f:facet>
+                                            <f:facet name="append">
+                                                <b:commandButton 
+                                                    style="height: 48px !Important;" 
+                                                    tooltip="Consultar Guías vigentes según el CUIT del Destinatario" 
+                                                    action="#{mbControl.consultarGuiasPorDest()}" 
+                                                    look="primary" 
+                                                    ajax="true" 
+                                                    update="frmConsulta,frmResult" 
+                                                    iconAwesome="fa-question-circle" 
+                                                    icon-size="2x" 
+                                                    icon-align="right"/>
+                                            </f:facet>
+                                        </b:inputText>
+                                    </h:panelGrid>
+                                </b:column>
+                            </b:row>
+                        </h:form>
+                        <h:form id="frmResult" >
+                            <b:row>
+                                <b:column span="12" rendered="#{mbControl.guia ne null}">
+                                    <b:panel collapsed="true" >
+                                        <f:facet name="heading">
+                                            <b:icon name="ver" class="fa fa-search-plus" tooltip="Ver/Ocultar los resultados" size="3x" />
+                                        </f:facet>
+                                        <br></br>
+                                        <h:panelGrid columns="1" style="margin: 0 auto;" >
+                                            <b:row >
+                                                <b:label text="Guía: #{mbControl.guia.codigo}" style="font-size: 20px"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Estado: #{mbControl.guia.estado.nombre}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Origen: #{mbControl.guia.locOrigen}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Remitente: #{mbControl.guia.nombreOrigen} - #{mbControl.guia.cuitOrigen}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Destino: #{mbControl.guia.locDestino}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Destinatario: #{mbControl.guia.nombreDestino} - #{mbControl.guia.cuitDestino}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Matrícula: #{mbControl.guia.matVehiculo}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Conductor: #{mbControl.guia.nombreConductor} - DNI: #{mbControl.guia.dniConductor}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Emisión: #{mbControl.guia.fechaEmision}" style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row style="padding-top:15px">
+                                                <b:label text="Vencimiento: #{mbControl.guia.fechaVencimiento}" style="font-size: 20px;"/>
+                                            </b:row>
+                                        </h:panelGrid>
+
+                                        <b:badge value="Productos" style="font-size: 20px; margin-top: 10px; margin-bottom: 10px" />
+
+                                        <b:dataTable  value="#{mbControl.guia.items}"
+                                                     var="item" >
+                                            <b:dataTableColumn value="#{item.nombreVulgar}" label="Nombre Vulgar" />
+                                            <b:dataTableColumn value="#{item.nombreCientifico}" label="Nombre Científico" />
+                                            <b:dataTableColumn  value="#{item.clase}" label="Clase" />
+                                            <b:dataTableColumn value="#{item.unidad}" label="Unidad" />
+                                            <b:dataTableColumn value="#{item.total}" label="Cantidad" />
+                                            <b:dataTableColumn value="#{item.totalKg}" label="Equival. Kg." />
+                                        </b:dataTable>
+                                        <h:panelGrid columns="1" style="margin: 0 auto; margin-top: 10px" >
+                                            <b:button rendered="#{mbControl.control.id eq null}" value="Registrar el Resultado del control" look="primary" onclick="$('.mdResultadoClass').modal()" 
+                                                      size="lg" />
+                                            <b:row rendered="#{mbControl.control.id ne null}">
+                                                <b:label rendered="#{mbControl.control.id ne null}" severity="success" 
+                                                         text="El resultado del control fue: #{mbControl.control.resultado.nombre}" 
+                                                         style="font-size: 20px;"/>
+                                            </b:row>
+                                            <b:row rendered="#{mbControl.control.id ne null}" style="padding-top:15px">
+                                                <b:label rendered="#{mbControl.control.id ne null}" severity="success" 
+                                                         text="Con fecha: #{mbControl.control.fechaHora}" style="font-size: 20px;"/>
+                                            </b:row>
+                                        </h:panelGrid>
+                                    </b:panel>
+                                </b:column>
+
+                                <b:column span="12" rendered="#{mbControl.lstGuias ne null}" >
+                                    <b:panel collapsed="true" >
+                                        <f:facet name="heading">
+                                            <b:icon name="ver" class="fa fa-search-plus" tooltip="Ver/Ocultar los resultados" size="3x" />
+                                        </f:facet>
+                                        <br></br>
+                                        <b:dataTable value="#{mbControl.lstGuias}"
+                                                     var="guia" >
+                                            <b:dataTableColumn value="#{guia.codigo}" label="Código" />
+                                            <b:dataTableColumn value="#{guia.estado.nombre}" label="Estado" />
+                                            <b:dataTableColumn value="#{guia.locOrigen}" label="Origen" />
+                                            <b:dataTableColumn value="#{guia.locDestino}" label="Destino" />
+                                            <b:dataTableColumn value="#{guia.matVehiculo}" label="matVehiculo" />
+                                            <b:dataTableColumn value="#{guia.fechaEmision}" label="fechaEmision" />
+                                            <b:dataTableColumn value="#{guia.fechaVencimiento}" label="fechaVencimiento" />
+                                            <b:dataTableColumn label="Ver">
+                                                <b:commandButton icon="view" ajax="true" update="frmResult" iconAwesome="fa-pencil" look="warning" tooltip="Ver detalle" >
+                                                    <f:setPropertyActionListener value="#{guia}" target="#{mbControl.guia}" />
+                                                </b:commandButton>
+                                            </b:dataTableColumn>
+                                        </b:dataTable>
+                                    </b:panel>
+                                </b:column>
+
+                                <b:column span="12" rendered="#{mbControl.guia eq null and mbControl.lstGuias eq null and mbControl.consultado}">
+                                    <h:panelGrid columns="1" style="margin: 0 auto;" >
+                                        <b:label severity="danger" text="No se registra Guía vigente para el vehículo consultado" style="font-size: 20px"/>
+                                    </h:panelGrid>
+                                </b:column>
+                            </b:row>
+                        </h:form>
+                    </b:column>
+                </b:row>
+
+                <b:row id="rwCtrl" rendered="#{mbControl.verControles}">
+                    <b:panel collapsible="flase" >
+                    <f:facet name="heading">
+                        <b:label severity="default" text="Listado de controles realizados por el usuario" style="font-size: 20px;"/>
+                    </f:facet>
+                        <b:row>
+                            <b:column>
+                                <b:dataTable value="#{mbControl.lstControles}"
+                                             var="ctrl" >
+                                    <b:dataTableColumn value="#{ctrl.guia.codigo}" label="Guía" />
+                                    <b:dataTableColumn value="#{ctrl.guia.estado.nombre}" label="Estado" />
+                                    <b:dataTableColumn value="#{ctrl.fechaHora}" label="Fecha y hora" />
+                                    <b:dataTableColumn value="#{ctrl.resultado.nombre}" label="Resultado" />
+                                    <b:dataTableColumn value="#{ctrl.obs}" label="Obs" />
+                                </b:dataTable>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                </b:row>
+            </h:panelGrid>
+            <br></br>
+        </ui:define> 
+    </ui:composition>
+</html>    

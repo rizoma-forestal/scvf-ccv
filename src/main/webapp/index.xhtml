@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/indexTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content">    
+            <f:metadata>  
+                <f:event listener="#" type="preRenderView"></f:event>  
+            </f:metadata> 
+            
+            <br></br>
+            <b:jumbotron>
+                <b:row>
+                    <b:column span="12">
+                        <h1 style="color: #610B21">Control y Verificación de productos forestales en tránsito</h1>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <p style="color: #4a4a4a">Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo, Algún Chamuyo.</p>
+                </b:row>
+            </b:jumbotron>
+
+            <b:row>
+                <b:column span="12">
+                    <h:form id="frmConsulta" >
+                        <b:row>
+                            <b:column span="12">
+                                <h:panelGrid columns="1" style="margin: 0 auto;">
+                                    <b:inputText id="mat" value="#{mbPublico.matricula}" 
+                                               class="itext-mat" 
+                                               placeholder="Matricula" 
+                                               required="true" 
+                                               requiredMessage="El campo Matrícula es obligatorio" tooltip="Ingrese la Matrícula a Verificar">
+                                        <f:facet name="prepend">
+                                            <b:commandButton 
+                                                action="#{mbPublico.limpiarResultMat()}" 
+                                                style="height: 48px !Important;" 
+                                                look="danger" tooltip="Limpiar" 
+                                                iconAwesome="fa-refresh" 
+                                                icon-size="2x" 
+                                                update="frmConsulta" 
+                                                ajax="true" />
+                                        </f:facet>
+                                        <f:facet name="append">
+                                            <b:commandButton 
+                                                style="height: 48px !Important;" 
+                                                tooltip="Consultar" 
+                                                action="#{mbPublico.consultarGuia()}" 
+                                                look="primary" 
+                                                ajax="true" 
+                                                update="frmConsulta" 
+                                                iconAwesome="fa-question-circle" 
+                                                icon-size="2x" 
+                                                icon-align="right"/>
+                                        </f:facet>
+                                    </b:inputText>
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="12" rendered="#{mbPublico.guia ne null}">
+                                <b:panel collapsed="true" >
+                                    <f:facet name="heading">
+                                        <b:icon name="ver" class="fa fa-search-plus" tooltip="Ver/Ocultar los resultados" size="3x" />
+                                    </f:facet>
+                                    <br></br>
+                                    <h:panelGrid columns="1" style="margin: 0 auto;" >
+                                        <b:row >
+                                            <b:label text="Guía: #{mbPublico.guia.codigo}" style="font-size: 40px"/>
+                                        </b:row>
+                                        <b:row style="padding-top:30px">
+                                            <b:label text="Estado: #{mbPublico.guia.estado.nombre}" style="font-size: 40px;"/>
+                                        </b:row>
+                                        <b:row style="padding-top:30px">
+                                            <b:label text="Origen: #{mbPublico.guia.locOrigen}" style="font-size: 40px;"/>
+                                        </b:row>
+                                        <b:row style="padding-top:30px">
+                                            <b:label text="Destino: #{mbPublico.guia.locDestino}" style="font-size: 40px;"/>
+                                        </b:row>
+                                        <b:row style="padding-top:30px">
+                                            <b:label text="Emisión: #{mbPublico.guia.fechaEmision}" style="font-size: 40px;"/>
+                                        </b:row>
+                                        <b:row style="padding-top:30px">
+                                            <b:label text="Vencimiento: #{mbPublico.guia.fechaVencimiento}" style="font-size: 40px;"/>
+                                        </b:row>
+                                    </h:panelGrid>
+                                    <br></br>
+                                </b:panel>
+                            </b:column>
+                            <b:column span="12" rendered="#{mbPublico.guia eq null and mbPublico.consultado}">
+                                <b:panel look="danger" collapsed="true" >
+                                    <f:facet name="heading">
+                                        <b:icon name="ver" class="fa fa-search-plus" tooltip="Ver/Ocultar los resultados" size="3x" />
+                                    </f:facet>
+                                    <h3 style="margin: 0 auto; text-align: center">No se registra Guía vigente para el vehículo consultado</h3>
+                                </b:panel>
+                            </b:column>
+                        </b:row>
+                    </h:form>
+                </b:column>
+            </b:row>  
+        </ui:define> 
+    </ui:composition>
+</html>
+

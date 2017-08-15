@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content">    
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Actualización de Clave</h1>
+                <p style="color: #4a4a4a">Por favor, actualice la clave de acceso utilizando los campos de texto correspondientes. Deberá repetir la nueva clave en ambos campos.</p>
+            </b:jumbotron>
+            <b:row>
+                <b:column span="12">
+                    <h:form id="frmCambioPass" >
+                        <b:row>
+                            <b:column span="12">
+                                <h:panelGrid columns="1" style="margin: 0 auto;">
+                                    <b:row >
+                                        <b:label text="Usuario: #{mbSesion.usuario.nombreCompleto}" style="font-size: 20px"/>
+                                    </b:row>
+                                    <b:row style="padding-top:15px" >
+                                        <b:label text="DNI: #{mbSesion.usuario.login}" style="font-size: 20px"/>
+                                    </b:row>
+                                    <b:row style="padding-top:15px" >
+                                        <b:inputSecret id="newClave" value="#{mbSesion.newClave}" 
+                                                       placeholder="Nueva Clave" tooltip="Ingrese la nueva clave"
+                                                       required="true" 
+                                                       requiredMessage="El campo Nueva Clave es obligatorio" >
+                                            <f:facet name="prepend">
+                                                <b:iconAwesome name="key" />
+                                            </f:facet>
+                                        </b:inputSecret>
+                                        <b:inputSecret id="newClave2" value="#{mbSesion.newClave2}" 
+                                                       placeholder="Repetir la nueva Clave" tooltip="Repita la clave ingresada arriba"
+                                                       required="true" 
+                                                       requiredMessage="La repetición de la nueva Clave es obligatoria." >
+                                            <f:facet name="prepend">
+                                                <b:iconAwesome name="key" />
+                                            </f:facet>
+                                        </b:inputSecret>
+                                    </b:row>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" style="margin: 0 auto;">
+                                    <b:commandButton 
+                                        action="#{mbSesion.actualizarClave()}" style="margin-right: 3px"
+                                        value="Actualizar"
+                                        look="success" tooltip="Iniciar sesión" 
+                                        iconAwesome="fa-check-circle " 
+                                        update="frmCambioPass,messages" 
+                                        ajax="true" />
+                                    <b:commandButton 
+                                        action="#{mbSesion.limpiarFormNewClave()}" style="margin-left: 3px"
+                                        value="Limpiar"
+                                        look="warning" tooltip="Limpiar datos" 
+                                        iconAwesome="fa-refresh" 
+                                        update="frmCambioPass" 
+                                        ajax="true" />
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <b:messages id="messages"
+                                globalOnly="true" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <br></br>
+        </ui:define> 
+    </ui:composition>
+</html>      

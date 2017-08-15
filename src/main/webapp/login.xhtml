@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content">    
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Inicio de Sesión</h1>
+                <p style="color: #4a4a4a">Para iniciar sesión como Usuario registrado deberá ingresar su DNI (sin '.') y la clave que le fuera asignada.</p>
+            </b:jumbotron>
+            <b:row>
+                <b:column span="12">
+                    <h:form id="frmLogin" >
+                        <b:row>
+                            <b:column span="12">
+                                <h:panelGrid columns="1" style="margin: 0 auto;">
+                                    <b:inputText id="us" value="#{mbSesion.dni}" 
+                                                   placeholder="DNI" 
+                                                   required="true" 
+                                                   requiredMessage="El campo DNI es obligatorio" 
+                                                   title="Nombre del Usuario registrado" >
+                                        <f:facet name="prepend">
+                                            <b:icon name="user" />
+                                        </f:facet>
+                                    </b:inputText>
+                                    
+                                    <b:inputSecret id="clave" value="#{mbSesion.clave}" 
+                                                   placeholder="Clave" 
+                                                   required="true" 
+                                                   requiredMessage="El campo Clave es obligatorio" 
+                                                   title="Clave del Usuario registrado" >
+                                        <f:facet name="prepend">
+                                            <b:iconAwesome name="key" />
+                                        </f:facet>
+                                    </b:inputSecret>
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" style="margin: 0 auto;">
+                                    <b:commandButton 
+                                        action="#{mbSesion.login()}" style="margin-right: 3px"
+                                        value="Iniciar"
+                                        look="success" tooltip="Iniciar sesión" 
+                                        iconAwesome="fa-check-circle " 
+                                        update="frmLogin,messages" 
+                                        ajax="true" />
+                                    <b:commandButton 
+                                        action="#{mbSesion.limpiarFormLogin()}" style="margin-left: 3px"
+                                        value="Limpiar"
+                                        look="warning" tooltip="Limpiar datos" 
+                                        iconAwesome="fa-refresh" 
+                                        update="frmLogin" 
+                                        ajax="true" />
+                                </h:panelGrid>
+                                <br></br>
+                            </b:column>
+                        </b:row>
+                        <b:messages id="messages"
+                                globalOnly="true" />
+                    </h:form>
+                </b:column>
+            </b:row>
+        </ui:define> 
+    </ui:composition>
+</html>            
+

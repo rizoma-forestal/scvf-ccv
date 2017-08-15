@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+    <managed-bean>
+        <description>Bean de respaldo para la gestión del control público</description>
+        <managed-bean-name>mbPublico</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbPublico</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean para la gestión de la sesión de usuarios registrados</description>
+        <managed-bean-name>mbSesion</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbSesion</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean de gestión de las consultas para el Control y la Verificación de Guías por Usuarios registrados</description>
+        <managed-bean-name>mbControl</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbControl</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean para la gestión de entidades paramétricas</description>
+        <managed-bean-name>mbParametrica</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbParametrica</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean de respaldo para la gestion de Componentes locales del Sistema</description>
+        <managed-bean-name>mbComponenteLocal</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbComponenteLocal</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean de respaldo para la gestión de Puestos de Control</description>
+        <managed-bean-name>mbPuestoControl</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbPuestoControl</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean de respaldo para la gestión de Usuarios de la aplicación</description>
+        <managed-bean-name>mbUsuario</managed-bean-name>
+        <managed-bean-class>ar.gob.ambiente.sacvefor.controlverificacion.mb.MbUsuario</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+</faces-config>

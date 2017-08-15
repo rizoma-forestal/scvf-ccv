@@ -1,0 +1,12 @@
+# Archivo de configuraciones estáticas
+Aplicacion=SACVeFor - Control y Verificación
+
+RutaAplicacion=/ctrlVerif
+
+TimeZone=America/Buenos_Aires
+
+# Claves para encriptar y desencriptar las contraseñas de los usurios a validar para el acceso de la API REST
+ClaveEncriptar=ministeriodeambiente
+ClaveDesencriptar=zorbazorbas
+
+# Rutas

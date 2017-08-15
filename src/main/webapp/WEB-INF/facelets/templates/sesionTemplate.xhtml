@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/img/favicon.ico"/>
+        <title><ui:insert name="title"/></title>
+    </h:head>
+    <h:body styleClass="body-back">
+        <h:outputStylesheet library="css" name="estilos.css"  />
+        <b:container styleClass="contaner-top">
+            <b:row >
+                <b:column span="8" >
+                    <img src="#{request.contextPath}/resources/img/logoSACveforHeader.jpg" width="80" height="70" style="float: left; margin-right: 10px; margin-top: 5px; margin-bottom: 5px" />
+                    <h:panelGrid columns="1" >
+                        <h:outputLabel value="SACVeFor - Control y Verificación" styleClass="dir-bosques" />
+                    </h:panelGrid>
+                </b:column>
+                <b:column span="4">
+                    <img src="#{request.contextPath}/resources/img/logoPres.png" width="339" height="67" style="float: right; margin-top: 5px; margin-bottom: 5px" />
+                </b:column>
+            </b:row>
+        </b:container>
+        <br/>
+        <b:navBar styleClass="navbarcolor" brand="" brandHref="#{request.contextPath}/faces/sesion/control.xhtml" 
+                  static="true" inverse="true" >
+            <b:navbarLinks>
+                <b:navLink value="Control" href="#{request.contextPath}/faces/sesion/control.xhtml"></b:navLink>
+                <b:dropMenu value="Administración" >
+                    <b:navLink value="Componentes locales" href="#{request.contextPath}/faces/sesion/adm/compLocal.xhtml"></b:navLink>
+                    <b:navLink value="Puestos de Control" href="#{request.contextPath}/faces/sesion/adm/puestos.xhtml"></b:navLink>
+                    <b:navLink value="Usuarios" href="#{request.contextPath}/faces/sesion/adm/usuario.xhtml"></b:navLink>
+                    <b:navLink value="Tipos de Parámetros" href="#{request.contextPath}/faces/sesion/adm/tipoParam.xhtml"></b:navLink>
+                    <b:navLink value="Parámetros" href="#{request.contextPath}/faces/sesion/adm/param.xhtml"></b:navLink>
+                </b:dropMenu>
+            </b:navbarLinks>
+            
+            <h:form styleClass="navbar-form navbar-right" >
+                <b:label text="Usuario: #{mbSesion.usuario.nombreCompleto}" rendered="#{!mbSesion.iniciando}" style="margin-right: 20px" />
+                <b:commandButton look="warning" action="#{mbSesion.cambiarClave()}" value="Cambiar clave" rendered="#{!mbSesion.iniciando}" style="margin-right: 3px" />
+                <b:commandButton look="danger" action="#{mbSesion.logout()}" value="Cerrar sesión" rendered="#{!mbSesion.iniciando}" style="margin-right: 3px" />
+            </h:form>
+        </b:navBar>
+        <b:container styleClass="container-center">
+            <ui:insert name="content">
+                <span>Página en construcción</span>
+            </ui:insert>
+        </b:container>
+        <br/>
+        <b:container styleClass="container-bottom">
+            <b:container>
+                <br/>
+                <b:row>
+                    <b:column style="color: darkgrey" span="9">
+                        Créditos
+                    </b:column>
+                    <b:column span="3">
+                        <img src="#{request.contextPath}/resources/img/logoPres.png" width="271" height="53" />
+                    </b:column>
+                </b:row>
+                <br/>
+            </b:container>
+        </b:container>
+    </h:body>
+</html>
+

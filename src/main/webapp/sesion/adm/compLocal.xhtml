@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/facelets/templates/sesionTemplate.xhtml">
+        <ui:define name="title">
+            <h:outputText value="SACVeFor - Control y Verificación" />
+        </ui:define>
+        <ui:define name="content"> 
+            <br></br>
+            <b:jumbotron>
+                <h1 style="color: #610B21">Administración de Componentes locales del Sistema</h1>
+                <p style="color: #4a4a4a">Desde aquí podrá gestionar los Componentes locales del Sistema alojados en las Provincias componentes</p>
+            </b:jumbotron>
+            <br></br>
+            <h:panelGrid id="pgGral" columns="1" style="margin: 0 auto;">
+                <p:growl id="messages" showDetail="false" />
+                <h:form prependId="false" id="frCompLocal">
+                    <!-- Formulario new y edit -->
+                    <b:panel collapsed="#{!mbComponenteLocal.edit or mbComponenteLocal.view}" rendered="#{mbComponenteLocal.edit and !mbComponenteLocal.view}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Crear nuevo o editar existente" size="3x" />
+                        </f:facet>
+                        <b:row id="rwNewEdit" >
+                            <b:column span="12">
+                                <h:panelGrid id="pgNewEdit" columns="1" >
+                                    <b:selectOneMenu label="Provincia" id="cmbResult" value="#{mbComponenteLocal.idProv}" >
+                                        <f:selectItem itemLabel="Seleccione la Provincia" itemValue="" noSelectionOption="true" />  
+                                        <f:selectItems value="#{mbComponenteLocal.lstProv}" var="prov" 
+                                                       itemLabel="#{prov.nombre}" itemValue="#{prov.id}"/>
+                                    </b:selectOneMenu>
+                                    <b:inputText id="url" value="#{mbComponenteLocal.compLocal.url}" label="Url API" 
+                                                 placeholder="Acceso al API REST" 
+                                                 tooltip="Ingrese el nombre la Url de acceso" />
+                                    <b:inputText id="email" value="#{mbComponenteLocal.compLocal.correoElectronico}" label="Correo electrónico:" 
+                                                 placeholder="Correo electrónico de contacto" 
+                                                 tooltip="Ingrese el Correo electrónico de contacto" />
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <h:panelGrid columns="2" style="margin: 0 auto;">
+                            <b:commandButton 
+                                action="#{mbComponenteLocal.save()}" style="margin-right: 3px"
+                                value="Guardar"
+                                look="success" tooltip="Guardar los datos consignados" 
+                                iconAwesome="fa-check-circle" 
+                                update="frCompLocal,messages" 
+                                ajax="true" />
+                            <b:commandButton 
+                                action="#{mbComponenteLocal.limpiarForm()}" style="margin-left: 3px"
+                                value="Limpiar"
+                                look="danger" tooltip="Limpiar datos" 
+                                iconAwesome="fa-refresh" 
+                                update="frCompLocal,messages" 
+                                ajax="true" />
+                        </h:panelGrid>
+                    </b:panel>
+                    
+                    <!-- Formulario view -->
+                    <b:panel collapsed="#{!mbComponenteLocal.view or mbComponenteLocal.edit}" rendered="#{mbComponenteLocal.view and !mbComponenteLocal.edit}" >
+                        <f:facet name="heading">
+                            <b:icon name="ver" class="fa fa-window-maximize" tooltip="Ver el detalle del Componente local seleccionado" size="3x" />
+                        </f:facet>
+                        <b:row id="rwView" >
+                            <b:column span="12">
+                                <h:panelGrid id="pgDatosGrales" columns="2" >
+                                    <p:outputLabel value="Id: " for="v_id" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_id" value="#{mbComponenteLocal.compLocal.id}"/>
+                                    <p:outputLabel value="Provincia: " for="v_prov" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_prov" value="#{mbComponenteLocal.compLocal.provincia}"/>
+                                    <p:outputLabel value="Url: " for="v_url" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_url" value="#{mbComponenteLocal.compLocal.url}"/>
+                                    <p:outputLabel value="Correo electróncio: " for="v_email" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_email" value=" #{mbComponenteLocal.compLocal.correoElectronico}"  />
+                                    <p:outputLabel value="Habilitado: " for="v_habilitado" style="font-weight: lighter"/>
+                                    <p:outputLabel id="v_habilitado" value=" #{mbComponenteLocal.compLocal.habilitado}"  />
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                    
+                    <!-- Listado -->
+                    <b:panel collapsible="false" >
+                        <f:facet name="heading">
+                            <h:panelGrid id="pgFacet" columns="2" >
+                                <b:label text="Componentes locales registrados" style="font-size: 20px;"/>
+                                <b:commandButton action="#{mbComponenteLocal.prepareNew()}" icon="view" ajax="true" style="margin-left: 10px" 
+                                                         update="frCompLocal" iconAwesome="fa-plus-square " look="primary" tooltip="Cargar nuevo" />
+                            </h:panelGrid>
+                        </f:facet>
+                        <b:row id="rwList" >
+                            <b:column span="12">
+                                <b:dataTable value="#{mbComponenteLocal.lstCompLocales}" var="cmpl" >
+                                    <b:dataTableColumn value="#{cmpl.id}" label="Id" />
+                                    <b:dataTableColumn value="#{cmpl.provincia}" label="Provincia" />
+                                    <b:dataTableColumn value="#{cmpl.url}" label="Url" />
+                                    <b:dataTableColumn value="#{cmpl.correoElectronico}" label="E-mail" />
+                                    <b:dataTableColumn value="#{cmpl.habilitado ? 'Habilitado': 'Deshabilitado'}" label="Estado" />
+                                    <b:dataTableColumn label="Acciones" style="width: 115px">
+                                        <b:commandButton action="#{mbComponenteLocal.prepareView()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frCompLocal" iconAwesome="fa-search-plus" look="default" tooltip="Ver detalle" >
+                                            <f:setPropertyActionListener value="#{cmpl}" target="#{mbComponenteLocal.compLocal}" />
+                                        </b:commandButton>
+                                        <b:commandButton action="#{mbComponenteLocal.prepareEdit()}" icon="view" ajax="true" style="margin-right: 5px" 
+                                                         update="frCompLocal" iconAwesome="fa-pencil" look="warning" tooltip="Editar" >
+                                            <f:setPropertyActionListener value="#{cmpl}" target="#{mbComponenteLocal.compLocal}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{cmpl.habilitado}" action="#{mbComponenteLocal.deshabilitar()}" icon="view" ajax="true"
+                                                         update="frCompLocal" iconAwesome="fa-minus-square " look="danger" tooltip="Deshabilitar" >
+                                            <f:setPropertyActionListener value="#{cmpl}" target="#{mbComponenteLocal.compLocal}" />
+                                        </b:commandButton>
+                                        <b:commandButton rendered="#{!cmpl.habilitado}" action="#{mbComponenteLocal.habilitar()}" icon="view" ajax="true"
+                                                         update="frCompLocal" iconAwesome="fa-plus-square" look="success" tooltip="Habilitar" >
+                                            <f:setPropertyActionListener value="#{cmpl}" target="#{mbComponenteLocal.compLocal}" />
+                                        </b:commandButton>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </b:column>
+                        </b:row>
+                    </b:panel>
+                </h:form>
+            </h:panelGrid>
+        </ui:define> 
+    </ui:composition>
+</html>    

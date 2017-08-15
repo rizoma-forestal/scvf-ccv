@@ -1,0 +1,64 @@
+# Parámetros dinámicos
+Server=http://localhost:8080
+ServerServicios=http://localhost:8080
+UrlTerritorial=/gestionTerritorial/rest
+UrlEspecies=/especiesVegetales/rest
+UrlEntidades=/rue/rest
+
+# Claves para encriptar y desencriptar las contraseñas de los usurios
+ClaveEncriptar=bosquesnativosycomunidad
+ClaveDesencriptar=trazabilidad
+
+# ------------------ #
+# Datos Responsables #
+# ------------------ #
+EntidadBosques=Dirección de Bosques
+EntidadBosqesSup_1=Dirección Nacional de Bosques, Ordenamiento Territorial y Suelos
+EntidadBosqesSup_2=Subsecretaría de Planificación y Ordenamiento Ambiental de Territorio
+EntidadBosqesSup_3=Secretaría de Política Ambiental, Cambio Climático y Desarrollo Sustentable
+EntidadBosqesSup_4=Ministerio de Ambiente y Desarrollo Sustentable
+DomicilioBosques=Tucumán 636 5° Piso - CABA
+TelBosques=(54) (11) 5218-4640
+emailBosques=rincostante@ambiente.gob.ar
+
+# ------------- #
+# Títulos Menús #
+# ------------- #
+
+# ------------------- #
+# Tipos de parámetros #
+# ------------------- #
+RolUsuarios=ROL_USUARIOS
+EstadosGuia=EST_GUIAS
+ParamControl=PARAM_CONTROL
+
+# ----------------- #
+# Roles de Usuarios #
+# ----------------- #
+Administrador=ADMINISTRADOR
+Operativo=OPERATIVO
+
+# ---------------- #
+# Estados de Guías #
+# Utilizados como resultados de Control #
+# ---------------- #
+Vigente=VIGENTE
+Cerrada=CERRADA
+Anulada=ANULADA
+Intervenida=INTERVENIDA
+Secuestrada=SECUESTRADA
+Suspendida=SUSPENDIDA
+Validada=VALIDADA
+
+# -------------------------------------- #
+# Parámetros de búsqueda para el control #
+# -------------------------------------- #
+ParamBusMat=MATRICULA
+ParamBusCodigo=CODIGO
+ParamBusCuitRem=CUIT REMITENTE
+ParamBusCuitDest=CUIT DESTINATARIO
+
+# -------- #
+# Máscaras #
+# -------- #
+

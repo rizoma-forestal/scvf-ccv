@@ -1,0 +1,78 @@
+
+
+.body-back{
+    background-color: #EAEDEB
+}
+
+.dir-bosques{
+    font-size: 24px; 
+    color: #F1FCF4; 
+    margin-top: 28px;
+}
+
+.contaner-top{
+    background-color: #07220E; 
+    border-radius: 0px 0px 10px 10px;
+    -moz-border-radius: 0px 0px 10px 10px;
+    -webkit-border-radius: 0px 0px 10px 10px;
+    border: 0px solid #000000;
+    background: #0B614B;
+    background: -webkit-linear-gradient(#0B614B, #07220E);
+    background: -moz-linear-gradient(#0B614B, #07220E);
+    background: -o-linear-gradient(#0B614B, #07220E);
+    background: linear-gradient(#0B614B, #07220E);
+}
+
+.navbarcolor { 
+    background-color: #4a4a4a !important; 
+} 
+
+.container-center{
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    background: white;
+    background: -webkit-linear-gradient(#FAFDFC, #CFD1D0);
+    background: -moz-linear-gradient(#FAFDFC, #CFD1D0);
+    background: -o-linear-gradient(#FAFDFC, #CFD1D0);
+    background: linear-gradient(#FAFDFC, #CFD1D0);
+    border: 0px solid #000000
+}
+
+.container-bottom{
+    width: 100% !Important; 
+    background-color: #4a4a4a; 
+    min-height: 200px
+}
+
+.itext-mat{
+    width: 220px; 
+    height: 50px !Important; 
+    font-size: 30px !Important; 
+    text-align: center; 
+    text-transform: uppercase;
+}
+
+.button-frm-mat{
+    width: 100px; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+    margin-bottom: 25px !Important;
+}
+
+/* Define las filas de una tabla */
+.table .ui-widget-content{
+    border: 1px solid #dddddd !important;
+    background: white;
+    color: #C5C6C6 !important;
+}
+
+.table .ui-outputlabel{
+    color: #07220E !important;
+}
+
+.table .ui-datatable-odd{
+    background-color: #f9f9f9 !important;
+}
+
+
