@@ -556,7 +556,7 @@ public class MbControl {
         
         try{
             mensaje.setRecipient(Message.RecipientType.TO, new InternetAddress(guia.getCompLocal().getCorreoElectronico()));
-            mensaje.setSubject("SACVeFor - Cotrol y Verificación - Notificación de Intervención de Guía" );
+            mensaje.setSubject("SACVeFor - Control y Verificación - Notificación de Intervención de Guía" );
             mensaje.setContent(bodyMessage, "text/html; charset=utf-8");
             
             Date timeStamp = new Date();
