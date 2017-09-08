@@ -342,8 +342,12 @@ public class MbControl {
      * Método para consultar la situación de una Guía a partir de la matrícula del vehículo de transporte
      */
     public void consultarGuiaMat(){
+        Date hoy = new Date(System.currentTimeMillis());
         try{
-            guia = guiaFacade.getVigByMatricula(matricula.toUpperCase());
+            Guia g = guiaFacade.getVigByMatricula(matricula.toUpperCase());
+            if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                guia = g;
+            }
             consultado = true;
         }catch(Exception ex){
             JsfUtil.addErrorMessage("Hubo un error consultando la Guía." + ex.getMessage());
@@ -354,8 +358,12 @@ public class MbControl {
      * Método para consutar la situación de una Guía a partir de su Código
      */
     public void consultarGuiaCod(){
+        Date hoy = new Date(System.currentTimeMillis());
         try{
-            guia = guiaFacade.getVigByCodigo(codigo);
+            Guia g = guiaFacade.getVigByCodigo(codigo);
+            if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                guia = g;
+            }
             consultado = true;
         }catch(Exception ex){
             JsfUtil.addErrorMessage("Hubo un error consultando la Guía." + ex.getMessage());
@@ -367,9 +375,17 @@ public class MbControl {
      */
     public void consultarGuiasPorRem(){
         String valid = validarCuit(cuitRem);
+        List<Guia> guiasLeidas;
+        Date hoy = new Date(System.currentTimeMillis());
         if(valid.equals("")){
             try{
-                lstGuias = guiaFacade.getVigByOrigen(cuitRem);
+                guiasLeidas = guiaFacade.getVigByOrigen(cuitRem);
+                lstGuias = new ArrayList<>();
+                for(Guia g : guiasLeidas){
+                    if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                        lstGuias.add(g);
+                    }
+                }
                 consultado = true;
             }catch(Exception ex){
                 JsfUtil.addErrorMessage("Hubo un error consultando las Guías remitidas por el CUIT ingresado." + ex.getMessage());
@@ -384,9 +400,17 @@ public class MbControl {
      */
     public void consultarGuiasPorDest(){
         String valid = validarCuit(cuitDest);
+        List<Guia> guiasLeidas;
+        Date hoy = new Date(System.currentTimeMillis());
         if(valid.equals("")){
             try{
-                lstGuias = guiaFacade.getVigByDestino(cuitDest);
+                guiasLeidas = guiaFacade.getVigByOrigen(cuitDest);
+                lstGuias = new ArrayList<>();
+                for(Guia g : guiasLeidas){
+                    if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                        lstGuias.add(g);
+                    }
+                }
                 consultado = true;
             }catch(Exception ex){
                 JsfUtil.addErrorMessage("Hubo un error consultando las Guías destinadas al CUIT ingresado." + ex.getMessage());
