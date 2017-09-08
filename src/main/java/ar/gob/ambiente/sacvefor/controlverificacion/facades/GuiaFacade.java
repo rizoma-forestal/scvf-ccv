@@ -69,14 +69,17 @@ public class GuiaFacade extends AbstractFacade<Guia> {
      * @return 
      */
     public List<Guia> getVigByOrigen(Long cuitOrigen){
-        String estado = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String validada = ResourceBundle.getBundle("/Config").getString("Validada");
         em = getEntityManager();
         String queryString = "SELECT guia FROM Guia guia "
                 + "WHERE guia.cuitOrigen = :cuitOrigen AND "
-                + "guia.estado.nombre = :estado";
+                + "(guia.estado.nombre = :vigente "
+                + "OR guia.estado.nombre = :validada)";
         Query q = em.createQuery(queryString)
                 .setParameter("cuitOrigen", cuitOrigen)
-                .setParameter("estado", estado);
+                .setParameter("vigente", vigente)
+                .setParameter("validada", validada);
         return q.getResultList();
     }    
     
@@ -100,14 +103,17 @@ public class GuiaFacade extends AbstractFacade<Guia> {
      * @return 
      */
     public List<Guia> getVigByDestino(Long cuitDestino){
-        String estado = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String validada = ResourceBundle.getBundle("/Config").getString("Validada");
         em = getEntityManager();
         String queryString = "SELECT guia FROM Guia guia "
                 + "WHERE guia.cuitDestino = :cuitDestino AND "
-                + "guia.estado.nombre = :estado";
+                + "(guia.estado.nombre = :vigente "
+                + "OR guia.estado.nombre = :validada)";
         Query q = em.createQuery(queryString)
                 .setParameter("cuitDestino", cuitDestino)
-                .setParameter("estado", estado);
+                .setParameter("vigente", vigente)
+                .setParameter("validada", validada);
         return q.getResultList();
     }      
 
@@ -133,15 +139,18 @@ public class GuiaFacade extends AbstractFacade<Guia> {
      * @return 
      */
     public Guia getVigByMatricula(String matVehiculo){
-        String estado = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String validada = ResourceBundle.getBundle("/Config").getString("Validada");
         em = getEntityManager();
         List<Guia> lstGuias;
         String queryString = "SELECT guia FROM Guia guia "
                 + "WHERE guia.matVehiculo = :matVehiculo AND "
-                + "guia.estado.nombre = :estado";
+                + "(guia.estado.nombre = :vigente "
+                + "OR guia.estado.nombre = :validada)";
         Query q = em.createQuery(queryString)
                 .setParameter("matVehiculo", matVehiculo)
-                .setParameter("estado", estado);
+                .setParameter("vigente", vigente)
+                .setParameter("validada", validada);
         lstGuias = q.getResultList();
         if(lstGuias.isEmpty()){
             return null;
@@ -156,15 +165,18 @@ public class GuiaFacade extends AbstractFacade<Guia> {
      * @return 
      */
     public Guia getVigByCodigo(String codigo){
-        String estado = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
+        String validada = ResourceBundle.getBundle("/Config").getString("Validada");
         em = getEntityManager();
         List<Guia> lstGuias;
         String queryString = "SELECT guia FROM Guia guia "
                 + "WHERE guia.codigo = :codigo AND "
-                + "guia.estado.nombre = :estado";
+                + "(guia.estado.nombre = :vigente "
+                + "OR guia.estado.nombre = :validada)";
         Query q = em.createQuery(queryString)
                 .setParameter("codigo", codigo)
-                .setParameter("estado", estado);
+                .setParameter("vigente", vigente)
+                .setParameter("validada", validada);
         lstGuias = q.getResultList();
         if(lstGuias.isEmpty()){
             return null;
