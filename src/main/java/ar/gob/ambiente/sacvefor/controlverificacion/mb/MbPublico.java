@@ -5,6 +5,7 @@ import ar.gob.ambiente.sacvefor.controlverificacion.entities.Guia;
 import ar.gob.ambiente.sacvefor.controlverificacion.facades.GuiaFacade;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.JsfUtil;
 import java.io.Serializable;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -68,12 +69,20 @@ public class MbPublico implements Serializable{
      * Método para consultar la situación de una Guía a partir de la matrícula del vehículo de transporte
      */
     public void consultarGuia(){
+        Date hoy = new Date(System.currentTimeMillis());
+        int i = 1;
         try{
-            guia = guiaFacade.getVigByMatricula(matricula.toUpperCase());
+            Guia g = guiaFacade.getVigByMatricula(matricula.toUpperCase());
+            if(g != null){
+                i = hoy.compareTo(g.getFechaVencimiento());
+            }
+            if(i <= 0){
+                guia = g;
+            }
             consultado = true;
         }catch(Exception ex){
             JsfUtil.addErrorMessage("Hubo un error consultando la Guía." + ex.getMessage());
-        }
+        } 
     }
     
     /**

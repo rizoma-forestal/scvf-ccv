@@ -42,8 +42,16 @@
             <b:container>
                 <br/>
                 <b:row>
-                    <b:column style="color: darkgrey" span="9">
-                        Créditos
+                    <b:column style="color: darkgrey; font-weight: lighter" span="9">
+                        <h:panelGrid columns="1" >
+                            <h:outputLabel value="#{config.EntidadBosques}" />
+                            <h:outputLabel value="#{config.EntidadBosqesSup_1}" />
+                            <h:outputLabel value="#{config.EntidadBosqesSup_2}" />
+                            <h:outputLabel value="#{config.EntidadBosqesSup_3}" />
+                            <h:outputLabel value="#{config.EntidadBosqesSup_4}" />
+                            <h:outputLabel value="#{config.DomicilioBosques}" />
+                            <h:outputLabel value="#{config.TelBosques}" />
+                        </h:panelGrid>
                     </b:column>
                     <b:column span="3">
                         <img src="#{request.contextPath}/resources/img/logoPres.png" width="271" height="53" />

@@ -343,9 +343,13 @@ public class MbControl {
      */
     public void consultarGuiaMat(){
         Date hoy = new Date(System.currentTimeMillis());
+        int i = 1;
         try{
             Guia g = guiaFacade.getVigByMatricula(matricula.toUpperCase());
-            if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+            if(g != null){
+                i = hoy.compareTo(g.getFechaVencimiento());
+            }
+            if(i <= 0){
                 guia = g;
             }
             consultado = true;
@@ -359,9 +363,13 @@ public class MbControl {
      */
     public void consultarGuiaCod(){
         Date hoy = new Date(System.currentTimeMillis());
+        int i = 1;
         try{
             Guia g = guiaFacade.getVigByCodigo(codigo);
-            if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+            if(g != null){
+                i = hoy.compareTo(g.getFechaVencimiento());
+            }
+            if(i <= 0){
                 guia = g;
             }
             consultado = true;
@@ -377,12 +385,16 @@ public class MbControl {
         String valid = validarCuit(cuitRem);
         List<Guia> guiasLeidas;
         Date hoy = new Date(System.currentTimeMillis());
+        int i = 1;
         if(valid.equals("")){
             try{
                 guiasLeidas = guiaFacade.getVigByOrigen(cuitRem);
                 lstGuias = new ArrayList<>();
                 for(Guia g : guiasLeidas){
-                    if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                    if(g != null){
+                        i = hoy.compareTo(g.getFechaVencimiento());
+                    }
+                    if(i <= 0){
                         lstGuias.add(g);
                     }
                 }
@@ -392,7 +404,7 @@ public class MbControl {
             }
         }else{
             JsfUtil.addErrorMessage(valid);
-        }
+        } 
     }
     
     /**
@@ -402,12 +414,16 @@ public class MbControl {
         String valid = validarCuit(cuitDest);
         List<Guia> guiasLeidas;
         Date hoy = new Date(System.currentTimeMillis());
+        int i = 1;
         if(valid.equals("")){
             try{
-                guiasLeidas = guiaFacade.getVigByOrigen(cuitDest);
+                guiasLeidas = guiaFacade.getVigByDestino(cuitDest);
                 lstGuias = new ArrayList<>();
                 for(Guia g : guiasLeidas){
-                    if(hoy.compareTo(g.getFechaVencimiento()) <= 0){
+                    if(g != null){
+                        i = hoy.compareTo(g.getFechaVencimiento());
+                    }
+                    if(i <= 0){
                         lstGuias.add(g);
                     }
                 }
@@ -417,7 +433,7 @@ public class MbControl {
             }
         }else{
             JsfUtil.addErrorMessage(valid);
-        }
+        } 
     }
 
     /**

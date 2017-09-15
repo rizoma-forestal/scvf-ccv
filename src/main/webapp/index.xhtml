@@ -11,10 +11,7 @@
             <h:outputText value="SACVeFor - Control y Verificación" />
         </ui:define>
         <ui:define name="content">    
-            <f:metadata>  
-                <f:event listener="#" type="preRenderView"></f:event>  
-            </f:metadata> 
-            
+            <p:growl id="messages" showDetail="false" />
             <br></br>
             <b:jumbotron>
                 <b:row>
@@ -38,7 +35,8 @@
                                                class="itext-mat" 
                                                placeholder="Matricula" 
                                                required="true" 
-                                               requiredMessage="El campo Matrícula es obligatorio" tooltip="Ingrese la Matrícula a Verificar">
+                                               requiredMessage="Debe ingresar una Matrícula de Vehículo para consultar." 
+                                               tooltip="Ingrese la Matrícula a Verificar">
                                         <f:facet name="prepend">
                                             <b:commandButton 
                                                 action="#{mbPublico.limpiarResultMat()}" 
@@ -56,7 +54,7 @@
                                                 action="#{mbPublico.consultarGuia()}" 
                                                 look="primary" 
                                                 ajax="true" 
-                                                update="frmConsulta" 
+                                                update="frmConsulta,messages" 
                                                 iconAwesome="fa-question-circle" 
                                                 icon-size="2x" 
                                                 icon-align="right"/>
@@ -74,22 +72,22 @@
                                     <br></br>
                                     <h:panelGrid columns="1" style="margin: 0 auto;" >
                                         <b:row >
-                                            <b:label text="Guía: #{mbPublico.guia.codigo}" style="font-size: 40px"/>
+                                            <b:label text="Guía: #{mbPublico.guia.codigo}" style="font-size: 30px"/>
                                         </b:row>
                                         <b:row style="padding-top:30px">
-                                            <b:label text="Estado: #{mbPublico.guia.estado.nombre}" style="font-size: 40px;"/>
+                                            <b:label text="Estado: #{mbPublico.guia.estado.nombre}" style="font-size: 30px;"/>
                                         </b:row>
                                         <b:row style="padding-top:30px">
-                                            <b:label text="Origen: #{mbPublico.guia.locOrigen}" style="font-size: 40px;"/>
+                                            <b:label text="Origen: #{mbPublico.guia.locOrigen}" style="font-size: 30px;"/>
                                         </b:row>
                                         <b:row style="padding-top:30px">
-                                            <b:label text="Destino: #{mbPublico.guia.locDestino}" style="font-size: 40px;"/>
+                                            <b:label text="Destino: #{mbPublico.guia.locDestino}" style="font-size: 30px;"/>
                                         </b:row>
                                         <b:row style="padding-top:30px">
-                                            <b:label text="Emisión: #{mbPublico.guia.fechaEmision}" style="font-size: 40px;"/>
+                                            <b:label text="Emisión: #{mbPublico.guia.fechaEmision}" style="font-size: 30px;"/>
                                         </b:row>
                                         <b:row style="padding-top:30px">
-                                            <b:label text="Vencimiento: #{mbPublico.guia.fechaVencimiento}" style="font-size: 40px;"/>
+                                            <b:label text="Vencimiento: #{mbPublico.guia.fechaVencimiento}" style="font-size: 30px;"/>
                                         </b:row>
                                     </h:panelGrid>
                                     <br></br>

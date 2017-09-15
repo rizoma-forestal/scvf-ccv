@@ -146,7 +146,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
         String queryString = "SELECT guia FROM Guia guia "
                 + "WHERE guia.matVehiculo = :matVehiculo AND "
                 + "(guia.estado.nombre = :vigente "
-                + "OR guia.estado.nombre = :validada)";
+                + "OR guia.estado.nombre = :validada) "
+                + "ORDER BY guia.id";
         Query q = em.createQuery(queryString)
                 .setParameter("matVehiculo", matVehiculo)
                 .setParameter("vigente", vigente)
@@ -155,7 +156,7 @@ public class GuiaFacade extends AbstractFacade<Guia> {
         if(lstGuias.isEmpty()){
             return null;
         }else{
-            return lstGuias.get(0);
+            return lstGuias.get(lstGuias.size() - 1);
         }
     }
     
