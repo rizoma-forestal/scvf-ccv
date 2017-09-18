@@ -83,7 +83,7 @@ public class GuiaFacadeREST {
             Guia guia = new Guia();
             // obtengo el componente local si es que existe
             if(entity.getCompLocal() != null){
-                ComponenteLocal compLocal = compLocalFacade.getExistente(entity.getProvincia());
+                ComponenteLocal compLocal = compLocalFacade.getExistente(entity.getProvincia().toUpperCase());
                 if(compLocal == null){
                     valida = false;
                 }else{
