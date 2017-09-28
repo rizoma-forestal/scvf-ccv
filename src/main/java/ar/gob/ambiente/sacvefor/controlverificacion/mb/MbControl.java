@@ -57,6 +57,7 @@ public class MbControl {
     private boolean verPorCuitRem;
     private boolean verPorCuitDest;    
     private boolean verControles;
+    private boolean verTodos;
     private Control control;
     private MbSesion sesion;
     private Usuario usLogueado;
@@ -83,6 +84,14 @@ public class MbControl {
     private ControlFacade controlFacade;
     
     public MbControl() {
+    }
+
+    public boolean isVerTodos() {
+        return verTodos;
+    }
+
+    public void setVerTodos(boolean verTodos) {
+        this.verTodos = verTodos;
     }
 
     public int getResult() {
@@ -271,6 +280,7 @@ public class MbControl {
         cuitRem = null;
         cuitDest = null;
         consultado = false;
+        verTodos = false;
     }
     
     /**
@@ -324,7 +334,7 @@ public class MbControl {
     /**
      * Método para preparar el listado de todos los controles realizados por el usuario
      */
-    public void prepareFrmControles(){
+    public void prepareFrmMisControles(){
         limpiarResult();
         verPorMatricula = false;
         verPorCodigo = false;
@@ -333,6 +343,20 @@ public class MbControl {
         verControles = true;
         lstControles = controlFacade.getByUsuario(usLogueado);
     }   
+    
+    /**
+     * Método para mostrar todos los controles registrados
+     */
+    public void prepareFrmControlesTotales(){
+        limpiarResult();
+        verPorMatricula = false;
+        verPorCodigo = false;
+        verPorCuitRem = false;
+        verPorCuitDest = false;
+        verControles = true;
+        lstControles = controlFacade.findAll();
+        verTodos = true;
+    }
     
     /***********************
      * Métodos operativos **

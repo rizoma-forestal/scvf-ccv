@@ -13,7 +13,7 @@
         <ui:define name="content">   
             <p:growl id="messages" showDetail="false" />
             <b:modal id="mdResultado" title="Seleccione el resultado, de ser necesario consigne observaciones. 
-                     Fianalmente guarde los datos mediante el botón 'Registrar Control'" styleClass="mdResultadoClass">
+                     Finalmente guarde los datos mediante el botón 'Registrar Control'" styleClass="mdResultadoClass">
                 <h:form id="frmControl" >
                     <b:panel rendered="#{mbControl.control.id eq null}">
                         <b:row >
@@ -75,7 +75,8 @@
                     <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Código" action="#{mbControl.prepareFrmCodigo()}"></b:navCommandLink>
                     <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="CUIT Remitente" action="#{mbControl.prepareFrmCuitRem()}"></b:navCommandLink>
                     <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="CUIT Destinatario" action="#{mbControl.prepareFrmCuitDest()}"></b:navCommandLink>
-                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Controles" action="#{mbControl.prepareFrmControles()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Mis Controles" action="#{mbControl.prepareFrmMisControles()}"></b:navCommandLink>
+                    <b:navCommandLink update="frmConsulta,frmResult,pgGral" value="Todos los Controles" action="#{mbControl.prepareFrmControlesTotales()}"></b:navCommandLink>
                 </b:navbarLinks>
             </b:navBar>
             <h:panelGrid id="pgGral" columns="1" style="margin: 0 auto;">
@@ -328,12 +329,14 @@
                 <b:row id="rwCtrl" rendered="#{mbControl.verControles}">
                     <b:panel collapsible="flase" >
                     <f:facet name="heading">
-                        <b:label severity="default" text="Listado de controles realizados por el usuario" style="font-size: 20px;"/>
+                        <b:label severity="default" text="Listado de controles realizados por el usuario" style="font-size: 20px;" rendered="#{not mbControl.verTodos}"/>
+                        <b:label severity="default" text="Listado de todos los controles registrados" style="font-size: 20px;" rendered="#{mbControl.verTodos}"/>
                     </f:facet>
                         <b:row>
                             <b:column>
                                 <b:dataTable value="#{mbControl.lstControles}"
                                              var="ctrl" >
+                                    <b:dataTableColumn value="#{ctrl.usuario.nombreCompleto}" label="Usuario" rendered="#{mbControl.verTodos}" />
                                     <b:dataTableColumn value="#{ctrl.guia.codigo}" label="Guía" />
                                     <b:dataTableColumn value="#{ctrl.guia.estado.nombre}" label="Estado" />
                                     <b:dataTableColumn value="#{ctrl.fechaHora}" label="Fecha y hora" />
