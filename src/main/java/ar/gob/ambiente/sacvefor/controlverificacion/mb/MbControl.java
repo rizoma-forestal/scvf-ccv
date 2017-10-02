@@ -14,6 +14,7 @@ import ar.gob.ambiente.sacvefor.controlverificacion.facades.ParametricaFacade;
 import ar.gob.ambiente.sacvefor.controlverificacion.facades.TipoParamFacade;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.EntidadCombo;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.JsfUtil;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -593,15 +594,16 @@ public class MbControl {
      * @return 
      */  
     private boolean enviarCorreo() {
+        SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         boolean result;
         String bodyMessage;
         mensaje = new MimeMessage(mailSesion);
         bodyMessage = "<p>A la Autoridad Local de Bosques de la Provinica de " + guia.getCompLocal().getProvincia() + "</p> "
                 + "<p>Estimado/a</p> "
-                + "<p>La Guía " + guia.getCodigo() + " emitida el " + guia.getFechaEmision() + " "
+                + "<p>La Guía " + guia.getCodigo() + " emitida el " + formateador.format(guia.getFechaEmision()) + " "
                 + "remitida por " + guia.getNombreOrigen() + ", CUIT: " + guia.getCuitOrigen() + " "
                 + "destinada a " + guia.getNombreDestino() + ", CUIT: " + guia.getCuitDestino() + " se ha "
-                + control.getResultado().getNombre() + " con fecha " + control.getFechaHora() + " "
+                + control.getResultado().getNombre() + " con fecha " + formateador.format(control.getFechaHora()) + " "
                 + "en el Puesto de control ubicado en la localidad de: " + control.getUsuario().getPuestoControl().getLocalidad() + ", "
                 + "Ruta " + control.getUsuario().getPuestoControl().getRuta() + ", altura " + control.getUsuario().getPuestoControl().getAltura() + ", "
                 + "con las siguientes observaciones: " + obs + ". "
