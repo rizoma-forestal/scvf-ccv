@@ -257,11 +257,17 @@
                                             <b:row style="padding-top:15px">
                                                 <b:label text="Conductor: #{mbControl.guia.nombreConductor} - DNI: #{mbControl.guia.dniConductor}" style="font-size: 20px;"/>
                                             </b:row>
-                                            <b:row style="padding-top:15px">
-                                                <b:label text="Emisión: #{mbControl.guia.fechaEmision}" style="font-size: 20px;"/>
+                                            <b:row style="padding-top:20px">
+                                                <h:outputText value="Emisión: " style="font-size: 20px;"/>
+                                                <h:outputText value="#{mbControl.guia.fechaEmision}" style="font-size: 20px;">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                                </h:outputText>
                                             </b:row>
-                                            <b:row style="padding-top:15px">
-                                                <b:label text="Vencimiento: #{mbControl.guia.fechaVencimiento}" style="font-size: 20px;"/>
+                                            <b:row >
+                                                <h:outputText value="Vencimiento: " style="font-size: 20px;"/>
+                                                <h:outputText value="#{mbControl.guia.fechaVencimiento}" style="font-size: 20px;">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                                </h:outputText>
                                             </b:row>
                                         </h:panelGrid>
 
@@ -304,9 +310,23 @@
                                             <b:dataTableColumn value="#{guia.estado.nombre}" label="Estado" />
                                             <b:dataTableColumn value="#{guia.locOrigen}" label="Origen" />
                                             <b:dataTableColumn value="#{guia.locDestino}" label="Destino" />
-                                            <b:dataTableColumn value="#{guia.matVehiculo}" label="matVehiculo" />
-                                            <b:dataTableColumn value="#{guia.fechaEmision}" label="fechaEmision" />
-                                            <b:dataTableColumn value="#{guia.fechaVencimiento}" label="fechaVencimiento" />
+                                            <b:dataTableColumn value="#{guia.matVehiculo}" label="Matrícula" />
+                                            <b:dataTableColumn data-type="date" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="Emision"/>
+                                                </f:facet>
+                                                <h:outputText value="#{guia.fechaEmision}" >
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
+                                            <b:dataTableColumn data-type="date" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="Vencimiento"/>
+                                                </f:facet>
+                                                <h:outputText value="#{guia.fechaVencimiento}" >
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
                                             <b:dataTableColumn label="Ver">
                                                 <b:commandButton icon="view" ajax="true" update="frmResult" iconAwesome="fa-pencil" look="warning" tooltip="Ver detalle" >
                                                     <f:setPropertyActionListener value="#{guia}" target="#{mbControl.guia}" />
@@ -335,11 +355,25 @@
                         <b:row>
                             <b:column>
                                 <b:dataTable value="#{mbControl.lstControles}"
-                                             var="ctrl" >
+                                             var="ctrl" 
+                                             id="ctrlTable" 
+                                             fixed-header="true" 
+                                             scroll-size="400px" 
+                                             scroll-x="false" 
+                                             responsive="true" 
+                                             lang="es">
                                     <b:dataTableColumn value="#{ctrl.usuario.nombreCompleto}" label="Usuario" rendered="#{mbControl.verTodos}" />
+                                    <b:dataTableColumn value="#{ctrl.guia.matVehiculo}" label="Matrícula" />
                                     <b:dataTableColumn value="#{ctrl.guia.codigo}" label="Guía" />
                                     <b:dataTableColumn value="#{ctrl.guia.estado.nombre}" label="Estado" />
-                                    <b:dataTableColumn value="#{ctrl.fechaHora}" label="Fecha y hora" />
+                                    <b:dataTableColumn data-type="date" >
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha y hora"/>
+                                        </f:facet>
+                                        <h:outputText value="#{ctrl.fechaHora}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                        </h:outputText>
+                                    </b:dataTableColumn>
                                     <b:dataTableColumn value="#{ctrl.resultado.nombre}" label="Resultado" />
                                     <b:dataTableColumn value="#{ctrl.obs}" label="Obs" />
                                 </b:dataTable>

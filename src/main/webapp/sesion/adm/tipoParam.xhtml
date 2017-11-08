@@ -86,7 +86,7 @@
                                     <b:dataTableColumn value="#{tipo.id}" label="Id" />
                                     <b:dataTableColumn value="#{tipo.nombre}" label="Nombre" />
                                     <b:dataTableColumn value="#{tipo.habilitado ? 'Habilitado': 'Deshabilitado'}" label="Estado" />
-                                    <b:dataTableColumn label="Acciones" style="width: 75px">
+                                    <b:dataTableColumn label="Acciones" style="width: 80px">
                                         <b:commandButton action="#{mbParametrica.prepareView()}" icon="view" ajax="true" style="margin-right: 5px" 
                                                          update="frTipoParam" iconAwesome="fa-search-plus" look="default" tooltip="Ver detalle" >
                                             <f:setPropertyActionListener value="#{tipo}" target="#{mbParametrica.tipoParam}" />

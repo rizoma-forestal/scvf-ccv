@@ -21,7 +21,7 @@
                 </b:row>
                 <b:row>
                     <p style="color: #4a4a4a">Ingresar en el cuadro de texto la matrícula del Vehículo cuyo transporte de productos forestales desea validar. Desde el botón azul de la derecha podrá ver los resultados de la búsqueda, mediante el botón rojo de la izquierda podrá resetear el campo de texto para una nueva búsqueda.</p>
-                    <p style="color: #4a4a4a">Si existe una Guía que ampare el transporte, sus datos serán mostrados abajo, en caso contrario se indicará la no existencia de una Guía en vigencia para el transporte meiante el Vehículo cuya matrícula se ingresó.</p>
+                    <p style="color: #4a4a4a">Si existe una Guía que ampare el transporte, sus datos serán mostrados debajo, en caso contrario se indicará la no existencia de una Guía en vigencia para el transporte mediante el Vehículo cuya matrícula se ingresó.</p>
                 </b:row>
             </b:jumbotron>
 
@@ -72,22 +72,28 @@
                                     <br></br>
                                     <h:panelGrid columns="1" style="margin: 0 auto;" >
                                         <b:row >
-                                            <b:label text="Guía: #{mbPublico.guia.codigo}" style="font-size: 30px"/>
+                                            <b:label text="Guía: #{mbPublico.guia.codigo}" style="font-size: 25px"/>
                                         </b:row>
-                                        <b:row style="padding-top:30px">
-                                            <b:label text="Estado: #{mbPublico.guia.estado.nombre}" style="font-size: 30px;"/>
+                                        <b:row style="padding-top:20px">
+                                            <b:label text="Estado: #{mbPublico.guia.estado.nombre}" style="font-size: 25px;"/>
                                         </b:row>
-                                        <b:row style="padding-top:30px">
-                                            <b:label text="Origen: #{mbPublico.guia.locOrigen}" style="font-size: 30px;"/>
+                                        <b:row style="padding-top:20px">
+                                            <b:label text="Origen: #{mbPublico.guia.locOrigen}" style="font-size: 25px;"/>
                                         </b:row>
-                                        <b:row style="padding-top:30px">
-                                            <b:label text="Destino: #{mbPublico.guia.locDestino}" style="font-size: 30px;"/>
+                                        <b:row style="padding-top:20px">
+                                            <b:label text="Destino: #{mbPublico.guia.locDestino}" style="font-size: 25px;"/>
                                         </b:row>
-                                        <b:row style="padding-top:30px">
-                                            <b:label text="Emisión: #{mbPublico.guia.fechaEmision}" style="font-size: 30px;"/>
+                                        <b:row style="padding-top:20px">
+                                            <h:outputText value="Emisión: " style="font-size: 25px;"/>
+                                            <h:outputText value="#{mbPublico.guia.fechaEmision}" style="font-size: 25px;">
+                                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                            </h:outputText>
                                         </b:row>
-                                        <b:row style="padding-top:30px">
-                                            <b:label text="Vencimiento: #{mbPublico.guia.fechaVencimiento}" style="font-size: 30px;"/>
+                                        <b:row >
+                                            <h:outputText value="Vencimiento: " style="font-size: 25px;"/>
+                                            <h:outputText value="#{mbPublico.guia.fechaVencimiento}" style="font-size: 25px;">
+                                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
+                                            </h:outputText>
                                         </b:row>
                                     </h:panelGrid>
                                     <br></br>
