@@ -2,6 +2,8 @@
 package ar.gob.ambiente.sacvefor.controlverificacion.entities;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,6 +82,12 @@ public class Control implements Serializable {
      */    
     @Transient
     private Date fechaRevision;   
+    
+    /**
+     * Campo que muestra la fecha y hora del control como string, para el listado de controles
+     */
+    @Transient
+    private String strFechaHora;
 
     /**
      * Ruta o camino en el que se encuentra el Puesto que realizó el Control
@@ -96,6 +104,17 @@ public class Control implements Serializable {
      */    
     @Transient
     private String altura;
+
+    public String getStrFechaHora() {
+        DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+        DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        strFechaHora = formatoFecha.format(fechaHora) + " " + formatoHora.format(fechaHora);
+        return strFechaHora;
+    }
+
+    public void setStrFechaHora(String strFechaHora) {
+        this.strFechaHora = strFechaHora;
+    }
 
     public String getRuta() {
         return ruta;

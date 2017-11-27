@@ -354,7 +354,7 @@
                     </f:facet>
                         <b:row>
                             <b:column>
-                                <b:dataTable value="#{mbControl.lstControles}"
+                                <b:dataTable value="#{mbControl.lstControles}" searching="true"
                                              var="ctrl" 
                                              id="ctrlTable" 
                                              fixed-header="true" 
@@ -366,14 +366,7 @@
                                     <b:dataTableColumn value="#{ctrl.guia.matVehiculo}" label="Matrícula" />
                                     <b:dataTableColumn value="#{ctrl.guia.codigo}" label="Guía" />
                                     <b:dataTableColumn value="#{ctrl.guia.estado.nombre}" label="Estado" />
-                                    <b:dataTableColumn data-type="date" >
-                                        <f:facet name="header">
-                                            <h:outputText value="Fecha y hora"/>
-                                        </f:facet>
-                                        <h:outputText value="#{ctrl.fechaHora}" >
-                                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa" timeZone="GMT-03:00"/>
-                                        </h:outputText>
-                                    </b:dataTableColumn>
+                                    <b:dataTableColumn value="#{ctrl.strFechaHora}" label="Fecha y hora" />
                                     <b:dataTableColumn value="#{ctrl.resultado.nombre}" label="Resultado" />
                                     <b:dataTableColumn value="#{ctrl.obs}" label="Obs" />
                                 </b:dataTable>
