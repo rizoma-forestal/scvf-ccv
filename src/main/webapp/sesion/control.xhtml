@@ -274,13 +274,22 @@
                                         <b:badge value="Productos" style="font-size: 20px; margin-top: 10px; margin-bottom: 10px" />
 
                                         <b:dataTable  value="#{mbControl.guia.items}"
-                                                     var="item" >
+                                                     var="item"
+                                                     lang="es">
                                             <b:dataTableColumn value="#{item.nombreVulgar}" label="Nombre Vulgar" />
                                             <b:dataTableColumn value="#{item.nombreCientifico}" label="Nombre Científico" />
                                             <b:dataTableColumn  value="#{item.clase}" label="Clase" />
                                             <b:dataTableColumn value="#{item.unidad}" label="Unidad" />
-                                            <b:dataTableColumn value="#{item.total}" label="Cantidad" />
-                                            <b:dataTableColumn value="#{item.totalKg}" label="Equival. Kg." />
+                                            <b:dataTableColumn label="Cantidad" >
+                                                <h:outputText value="#{item.total}">
+                                                    <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2" currencySymbol="$" locale="es_ES"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
+                                            <b:dataTableColumn label="Equival. Kg." >
+                                                <h:outputText value="#{item.totalKg}">
+                                                    <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2" currencySymbol="$" locale="es_ES"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
                                         </b:dataTable>
                                         <h:panelGrid columns="1" style="margin: 0 auto; margin-top: 10px" >
                                             <b:button rendered="#{mbControl.control.id eq null}" value="Registrar el Resultado del control" look="primary" onclick="$('.mdResultadoClass').modal()" 
