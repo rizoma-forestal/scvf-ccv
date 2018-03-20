@@ -21,12 +21,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public class ComponenteLocal implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**
-     * Nombre de la Provincia que gestiona el Componente local
+     * Variable privada: Nombre de la Provincia que gestiona el Componente local
      */
     @Column (nullable=false, length=50, unique=true)
     @NotNull(message = "El campo provincia no puede ser nulo")
@@ -34,19 +38,19 @@ public class ComponenteLocal implements Serializable {
     private String provincia;
     
     /**
-     * Identificación de la Provincia en el SErvicio de Gestión territorial
+     * Variable privada: Identificación de la Provincia en el SErvicio de Gestión territorial
      */
     private Long idProvGt;
     
     /**
-     * Url de acceso a la API rest del Componente local
+     * Variable privada: Url de acceso a la API rest del Componente local
      */
     @Column (length=50, unique=true)
     @Size(message = "El campo url no puede tener más de 50 caracteres", max = 50)     
     private String url;
     
     /**
-     * Correo electrónico oficial del Componente local
+     * Variable privada: Correo electrónico oficial del Componente local
      * Para notificar resultados de controles
      */
     @Column (length=50)
@@ -54,7 +58,7 @@ public class ComponenteLocal implements Serializable {
     private String correoElectronico;
     
     /**
-     * Condición de habilitado del Componente local
+     * Variable privada: Condición de habilitado del Componente local
      */
     private boolean habilitado;
 

@@ -17,23 +17,33 @@ import javax.persistence.Query;
 @Stateless
 public class ParametricaFacade extends AbstractFacade<Parametrica> {
 
+    /**
+     * Variable privada: EntityManager al que se le indica la unidad de persistencia mediante la cual accederá a la base de datos
+     */ 
     @PersistenceContext(unitName = "sacvefor-controlVerificacionPU")
     private EntityManager em;
 
+    /**
+     * Método que implementa el abstracto para la obtención del EntityManager
+     * @return EntityManager para acceder a datos
+     */ 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Constructor
+     */
     public ParametricaFacade() {
         super(Parametrica.class);
     }
     
     /**
      * Método para validar la existencia de un parámetro
-     * @param nombre : Nombre cuya existencia se quiere validar
-     * @param tipo : TipoParam correspondiente a la Paramétrica a validar
-     * @return 
+     * @param nombre String Nombre cuya existencia se quiere validar
+     * @param tipo String TipoParam correspondiente a la Paramétrica a validar
+     * @return Parametrica paramétrica correspondiente a los parámetris de búsqueda
      */
     public Parametrica getExistente(String nombre, TipoParam tipo) {
         List<Parametrica> lstParam;
@@ -55,7 +65,7 @@ public class ParametricaFacade extends AbstractFacade<Parametrica> {
     
     /**
      * Método sobreescrito que lista las Paramétricas ordenadas por nombre
-     * @return 
+     * @return List<Parametrica> listado de las paramétricas ordenadas
      */
     @Override
     public List<Parametrica> findAll(){
@@ -69,8 +79,8 @@ public class ParametricaFacade extends AbstractFacade<Parametrica> {
     /**
      * Mátodo que solo devuelve las Parametricas habilitadas, según el tipo.
      * Para poblar combos de selección.
-     * @param tipo : Tipo de Paramétrica buscado
-     * @return 
+     * @param tipo TipoParam Tipo de Paramétrica buscado
+     * @return List<Parametrica> listado de las paramétricas habilitadas
      */
     public List<Parametrica> getHabilitadas(TipoParam tipo){
         em = getEntityManager();
@@ -85,8 +95,8 @@ public class ParametricaFacade extends AbstractFacade<Parametrica> {
 
     /**
      * Método que devuelve un listado de Usuarios con el rol (Parametrica) cuyo id se recibe.
-     * @param idRol : id de la Parametrica que oficia de rol del Usuario
-     * @return 
+     * @param idRol Long id de la Parametrica que oficia de rol del Usuario
+     * @return List<Usuario> listado de los usuarios con el rol cuyo id se solicitó
      */
     public List<Usuario> getUsuariosByRol(Long idRol){
         em = getEntityManager();

@@ -30,12 +30,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**
-     * Guarda el rol al que pertenece el usuario
+     * Variable privada: Guarda el rol al que pertenece el usuario
      */
     @ManyToOne
     @JoinColumn(name="rol_id", nullable=false)
@@ -43,26 +47,26 @@ public class Usuario implements Serializable {
     private Parametrica rol;
     
     /**
-     * Será el DNI del usuario que oficiará como nombre de usuario
+     * Variable privada: Será el DNI del usuario que oficiará como nombre de usuario
      */
     private Long login;
     
     /**
-     * Nombre y apellido del usuario
+     * Variable privada: Nombre y apellido del usuario
      */
     @Column (length=50)
     @Size(message = "El campo nombreCompleto no puede tener más de 50 caracteres", max = 50)       
     private String nombreCompleto; 
     
     /**
-     * Correo electrónico del Usuario, en el que recibirá las credenciales de acceso a la aplicación
+     * Variable privada: Correo electrónico del Usuario, en el que recibirá las credenciales de acceso a la aplicación
      */
     @Column (length=50)
     @Size(message = "El campo correoElectronico no puede tener más de 50 caracteres", max = 50)   
     private String correoElectronico;
     
     /**
-     * Clave encriptada que generará el sistema automáticamente la primera vez y 
+     * Variable privada: Clave encriptada que generará el sistema automáticamente la primera vez y 
      * solicitará al usuario su cambio cuando realice la primera sesión.
      */
     @Column (length=100)
@@ -70,7 +74,7 @@ public class Usuario implements Serializable {
     private String clave;
     
     /**
-     * Puesto de control en el que se desempeña el Usuario
+     * Variable privada: Puesto de control en el que se desempeña el Usuario
      */
     @ManyToOne
     @JoinColumn(name="puesto_id")
@@ -78,38 +82,65 @@ public class Usuario implements Serializable {
     private PuestoControl puestoControl;
     
     /**
-     * Controles realizados por el Usuario
+     * Variable privada: Controles realizados por el Usuario
      */
     @OneToMany (mappedBy="usuario", orphanRemoval = true)
     @Basic(fetch = FetchType.LAZY)
     private List<Control> controles;
     
     /**
-     * Fecha de alta del usuario
+     * Variable privada: Fecha de alta del usuario
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaAlta;
     
     /**
-     * Fecha de la última vez que el usuario registra una sesión en la aplicación
+     * Variable privada: Fecha de la última vez que el usuario registra una sesión en la aplicación
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaUltimoLogin;
     
     /**
-     * indica si el usuario solo se logueó una vez, en cuyo caso no cambió la contraseña
+     * Variable privada: indica si el usuario solo se logueó una vez, en cuyo caso no cambió la contraseña
      */
     private boolean primeraVez;
     
     /**
-     * Estado de habilitado
+     * Variable privada: Estado de habilitado
      */
     private boolean habilitado;
     
+    /**
+     * Variable privada: usuario de la API que operó el registro del usuario local
+     */
+    @ManyToOne
+    @JoinColumn(name="usuarioapi_id", nullable=true)
+    private UsuarioApi usuarioApi;     
+    
+    /**
+     * Constructor
+     */
     public Usuario(){
         controles = new ArrayList<>();
     }
 
+    /**
+     * Método que devuleve el usuario API, solo para la aplicación, no disponible en la API
+     * @return 
+     */
+    @XmlTransient
+    public UsuarioApi getUsuarioApi() {
+        return usuarioApi;
+    }
+
+    public void setUsuarioApi(UsuarioApi usuarioApi) {
+        this.usuarioApi = usuarioApi;
+    }
+
+    /**
+     * Método que devuleve los controles del Usuario, solo para la aplicación, no disponible en la API
+     * @return 
+     */
     @XmlTransient
     public List<Control> getControles() {
         return controles;

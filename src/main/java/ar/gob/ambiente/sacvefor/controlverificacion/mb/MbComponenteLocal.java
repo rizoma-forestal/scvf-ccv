@@ -6,16 +6,20 @@ import ar.gob.ambiente.sacvefor.controlverificacion.facades.ComponenteLocalFacad
 import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.ProvinciaClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.EntidadCombo;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.JsfUtil;
+import ar.gob.ambiente.sacvefor.controlverificacion.util.Token;
 import ar.gob.ambiente.sacvefor.servicios.territorial.Provincia;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -26,20 +30,71 @@ import org.apache.log4j.Logger;
  */
 public class MbComponenteLocal implements Serializable{
 
+    /**
+     * Variable privada: Entidad a gestionar por el bean
+     */
     private ComponenteLocal compLocal;
+    
+    /**
+     * Variable privada: listado de componentes locales registrados
+     */
     private List<ComponenteLocal> lstCompLocales;
+    
+    /**
+     * Variable privada: listado de Entidades para gestionar objetos en combos
+     */
     private List<EntidadCombo> lstProv;
+    
+    /**
+     * Variable privada: UsuarioClient Cliente para la API REST de Territorial
+     */
+    private ar.gob.ambiente.sacvefor.controlverificacion.territ.client.UsuarioClient usuarioClientTerr;
+    
+    /**
+     * Variable privada: Token obtenido al validar el usuario de la API Territorial
+     */ 
+    private Token tokenTerr;
+    
+    /**
+     * Variable privada: Token en formato String del obtenido al validar el usuario de la API Territorial
+     */ 
+    private String strTokenTerr;     
+    
+    /**
+     * Variable privada: identificador de la provincia dentro de la cual se situará el componente local
+     */
     private int idProv;
+    
+    /**
+     * Variable privada: inidica si el formulario es para una vista detalle de la entidad
+     */
     private boolean view;
+    
+    /**
+     * Variable privada: inidica si el formulario es para una vista de edición de la entidad
+     */
     private boolean edit;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */ 
     static final Logger LOG = Logger.getLogger(MbComponenteLocal.class);
     
     // Clientes REST para la gestión del API Territorial
+    /**
+     * Variable privada: Cliente para la API de servicios Territorial
+     */
     private ProvinciaClient provClient;     
     
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de la entidad gestionada
+     */      
     @EJB
     private ComponenteLocalFacade compLocalFacade;
     
+    /**
+     * Constructor
+     */
     public MbComponenteLocal() {
     }
 
@@ -96,6 +151,11 @@ public class MbComponenteLocal implements Serializable{
     /******************************
      * Mátodos de inicialización **
      ******************************/
+    
+    /**
+     * Método que se ejecuta luego de instanciada la clase e inicializa las entidades a gestionar 
+     * y carga las provincias registradas en el API territorial en el combo correspondinte
+     */
     @PostConstruct
     public void init(){
         compLocal = new ComponenteLocal();
@@ -232,18 +292,30 @@ public class MbComponenteLocal implements Serializable{
      *********************/
     
     /**
-     * Método para cargar el listado de Provincias para su selección
+     * Método para cargar el listado de Provincias para su selección.
+     * Se comunica con la API Territorial mediante el cliente respectivo
+     * Utilizado por init()
      */
     private void cargarProvincias() {
         EntidadCombo provincia;
         List<Provincia> listSrv;
         
         try{
+            // instancio el cliente para la selección del Departamento TERR, obtengo el token si no está seteado o está vencido
+            if(tokenTerr == null){
+                getTokenTerr();
+            }else try {
+                if(!tokenTerr.isVigente()){
+                    getTokenTerr();
+                }
+            } catch (IOException ex) {
+                LOG.fatal("Hubo un error obteniendo la vigencia del token Territorial. " + ex.getMessage());
+            }
             // instancio el cliente para la selección de las provincias
             provClient = new ProvinciaClient();
             // obtengo el listado de provincias 
             GenericType<List<Provincia>> gType = new GenericType<List<Provincia>>() {};
-            Response response = provClient.findAll_JSON(Response.class);
+            Response response = provClient.findAll_JSON(Response.class, tokenTerr.getStrToken());
             listSrv = response.readEntity(gType);
             // lleno el list con las provincias como un objeto Entidad Servicio
             lstProv = new ArrayList<>();
@@ -268,7 +340,7 @@ public class MbComponenteLocal implements Serializable{
 
     /**
      * Método para validar el correo electrónico ingresado
-     * @return 
+     * @return boolean true o false según el correo esté o no validado
      */
     private boolean validarMail() {
         // defino el pattern para comparar
@@ -278,4 +350,23 @@ public class MbComponenteLocal implements Serializable{
         Matcher mather = pattern.matcher(compLocal.getCorreoElectronico());
         return mather.find() == true;
     }
+    
+    /**
+     * Método privado que obtiene y setea el token para autentificarse ante la API rest de Territorial
+     * Crea el campo de tipo Token con la clave recibida y el momento de la obtención.
+     * Utilizado por cargarProvincias()
+     */
+    private void getTokenTerr(){
+        try{
+            usuarioClientTerr = new ar.gob.ambiente.sacvefor.controlverificacion.territ.client.UsuarioClient();
+            Response responseUs = usuarioClientTerr.authenticateUser_JSON(Response.class, ResourceBundle.getBundle("/Config").getString("UsRestTerr"));
+            MultivaluedMap<String, Object> headers = responseUs.getHeaders();
+            List<Object> lstHeaders = headers.get("Authorization");
+            strTokenTerr = (String)lstHeaders.get(0); 
+            tokenTerr = new Token(strTokenTerr, System.currentTimeMillis());
+            usuarioClientTerr.close();
+        }catch(ClientErrorException ex){
+            System.out.println("Hubo un error obteniendo el token para la API RUE: " + ex.getMessage());
+        }
+    }         
 }

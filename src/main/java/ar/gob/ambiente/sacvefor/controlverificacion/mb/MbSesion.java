@@ -25,24 +25,72 @@ import org.apache.log4j.Logger;
  */
 public class MbSesion implements Serializable{
 
+    /**
+     * Variable privada: dni que actúa como login del usuario
+     */  
     private Long dni;
+    
+    /**
+     * Variable privada: clave ingresada por el usuario
+     */     
     private String clave;
+    
+    /**
+     * Variable privada: clave encriptada para su validación
+     */  
     private String claveEncript;
+    
+    /**
+     * Variable privada: nueva clave solicitada al usuario en su primera sesión
+     */  
     private String newClave;
+    
+    /**
+     * Variable privada: repetición de la nueva clave
+     */  
     private String newClave2;
+    
+    /**
+     * Variable privada: Usuario logueado
+     */ 
     private Usuario usuario;
+    
+    /**
+     * Variable privada: flag que indica si el bean ya está instanciado
+     */
     private boolean iniciando;
+    
+    /**
+     * Variable privada: indica si el usuario está o no logeado
+     */  
     private boolean logeado = false;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */  
     static final Logger LOG = Logger.getLogger(MbSesion.class);
     
     // campos para la notificación al Usuario
+    /**
+     * Variable privada: sesión de mail del servidor
+     */
     @Resource(mappedName ="java:/mail/ambientePrueba")    
     private Session mailSesion;
+    
+    /**
+     * Variable privada: String mensaje a enviar por correo electrónico
+     */  
     private Message mensaje;   
 
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Usuario
+     */  
     @EJB
     private UsuarioFacade usuarioFacade;    
     
+    /**
+     * Constructor
+     */
     public MbSesion() {
     }
 
@@ -130,6 +178,9 @@ public class MbSesion implements Serializable{
      * Métodos de inicialización **
      ******************************/ 
     
+    /**
+     * Método que se ejecuta luego de instanciada la clase, setea el flag de inicio
+     */         
     @PostConstruct
     public void init(){
         iniciando = true;
@@ -140,7 +191,9 @@ public class MbSesion implements Serializable{
      ***********************/ 
 
     /**
-     * Método para validar los datos del usuario
+     * Método para validar los datos del usuario.
+     * Si es la primera vez se redirecciona a la vista primeraVez.xhtml para actualizar la contraseña.
+     * Si no es la primera vez, redirecciona a la vista control.xhtml
      */
     public void login(){
         ExternalContext contextoExterno = FacesContext.getCurrentInstance().getExternalContext();
