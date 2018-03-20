@@ -16,22 +16,32 @@ import javax.persistence.Query;
 @Stateless
 public class TipoParamFacade extends AbstractFacade<TipoParam> {
 
+    /**
+     * Variable privada: EntityManager al que se le indica la unidad de persistencia mediante la cual accederá a la base de datos
+     */ 
     @PersistenceContext(unitName = "sacvefor-controlVerificacionPU")
     private EntityManager em;
 
+    /**
+     * Método que implementa el abstracto para la obtención del EntityManager
+     * @return EntityManager para acceder a datos
+     */ 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Constructor
+     */
     public TipoParamFacade() {
         super(TipoParam.class);
     }
     
     /**
      * Método para validar la existencia de un TipoParam según su nombre
-     * @param nombre : Nombre del TipoParam a validar
-     * @return 
+     * @param nombre String Nombre del TipoParam a validar
+     * @return TipoParam tipo de paramétrica correspondiente
      */
     public TipoParam getExistente(String nombre) {
         List<TipoParam> lstParam;
@@ -51,7 +61,7 @@ public class TipoParamFacade extends AbstractFacade<TipoParam> {
 
     /**
      * Método sobreescrito que lista los TipoParam ordenados por nombre
-     * @return 
+     * @return List<TipoParam> listado de los tipos de paramétricas ordenados por nombre
      */
     @Override
     public List<TipoParam> findAll(){
@@ -64,7 +74,7 @@ public class TipoParamFacade extends AbstractFacade<TipoParam> {
 
     /**
      * Mátodo que solo devuelve los Tipos de Parametricas habilitados.
-     * @return 
+     * @return List<TipoParam> listado de los tipos de paramétricas habilitados
      */
     public List<TipoParam> getHabilitados(){
         em = getEntityManager();
@@ -78,8 +88,8 @@ public class TipoParamFacade extends AbstractFacade<TipoParam> {
     /**
      * Método que devuelve las Paramétricas para un tipo determinado por su id
      * Consumido por la API REST
-     * @param idTipo
-     * @return 
+     * @param idTipo Long identificación del tipo buscado
+     * @return List<Parametrica> listado de las Paramétricas vinculadas al tipo correspondiente
      */
     public List<Parametrica> getParamByTipo(Long idTipo){
         em = getEntityManager();

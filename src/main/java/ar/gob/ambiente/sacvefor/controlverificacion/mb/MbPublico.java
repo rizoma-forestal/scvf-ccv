@@ -18,14 +18,35 @@ import org.apache.log4j.Logger;
  */
 public class MbPublico implements Serializable{
 
+    /**
+     * Variable privada: guía para setear con el resultado de la búsqueda por matrícula del vehículo de transporte
+     */
     private Guia guia;
+    
+    /**
+     * Variable privada: matrícula del vehículo de transporte de la guía a buscar
+     */
     private String matricula;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */ 
     static final Logger LOG = Logger.getLogger(MbPublico.class);
+    
+    /**
+     * Variable privada: flag que indica si se está consultando una guía
+     */
     public boolean consultado;
     
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de guía
+     */
     @EJB
     private GuiaFacade guiaFacade;
     
+    /**
+     * Constructor
+     */
     public MbPublico() {
     }
 
@@ -53,6 +74,9 @@ public class MbPublico implements Serializable{
         this.matricula = matricula;
     }
     
+    /**
+     * Método que inicializa el bean y remueve el bean de sesión
+     */        
     @PostConstruct
     public void init(){
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()

@@ -43,47 +43,166 @@ import javax.ws.rs.core.Response;
  */
 public class MbControl {
 
+    /**
+     * Variable privada: Entidada para gestionar objetos de combos, en este caso Paramétrica
+     */
     private EntidadCombo parmSelected;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán resultados de los controles
+     */
     private List<EntidadCombo> lstResultados;
+    
+    /**
+     * Variable privada: listado de los Controles registrados
+     */
     private List<Control> lstControles;
+    
+    /**
+     * Variable privada: matrícula de un vehículo a buscar para ver o efecutar controles
+     */
     private String matricula;
+    
+    /**
+     * Variable privada: código único de guía para efectuar un control
+     */
     private String codigo;
+    
+    /**
+     * Variable privada: cuit del remitente de las guías a efectuar un control
+     */
     private Long cuitRem;
+    
+    /**
+     * Variable privada: cuit del destinatario de las guías a efectuar un control
+     */
     private Long cuitDest;
+    
+    /**
+     * Variable privada: guía a controlar
+     */
     private Guia guia;
+    
+    /**
+     * Variable privada: listado de guías a controlar
+     */
     private List<Guia> lstGuias;
+    
+    /**
+     * Variable privada: flag que indica si una guía está siendo consultada
+     */
     private boolean consultado;
+    
+    /**
+     * Variable privada: flag que indica si se está consultando guías por la matrícula del vehículo correspondiente
+     */
     private boolean verPorMatricula;
+    
+    /**
+     * Variable privada: flag que indica si una guía se está consultando por el código correspondiente
+     */
     private boolean verPorCodigo;
+    
+    /**
+     * Variable privada: flag que indica si una guía está siendo consultada según su código
+     */
     private boolean verPorCuitRem;
-    private boolean verPorCuitDest;    
+    
+    /**
+     * Variable privada: flag que indica si las guías están siendo consultadas según el cuit de su destinatario
+     */
+    private boolean verPorCuitDest;   
+    
+    /**
+     * Variable privada: flag que indica si se están consultando controles
+     */
     private boolean verControles;
+    
+    /**
+     * Variable privada: flag que indica si se están listando todos los controles
+     */
     private boolean verTodos;
+    
+    /**
+     * Variable privada: control gestionado
+     */
     private Control control;
+    
+    /**
+     * Variable privada: bean de sesión para gestionar el usuario logeado
+     */
     private MbSesion sesion;
+    
+    /**
+     * Variable privada: usuario logeado
+     */
     private Usuario usLogueado;
+    
+    /**
+     * Variable privada: indica el id de la parametrica que hará las veces de resultado del control
+     */
     private int result;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */ 
     static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(MbControl.class);
+    
+    /**
+     * Variable privada: observaciones relacionadas con el control realizado
+     */
     private String obs;
     
     // campos y recursos para el envío de correos al usuario
+    /**
+     * Variable privada: sesión de mail del servidor
+     */    
     @Resource(mappedName ="java:/mail/ambientePrueba")    
     private Session mailSesion;
+    
+    /**
+     * Variable privada: String mensaje a enviar por correo electrónico
+     */ 
     private Message mensaje;     
     
     // campos para la API CGL
+    /**
+     * Variable privada: cliente para consultar la API de Guías de la gestion local correspondiente 
+     */
     private GuiaLocalClient guiaLocalClient;
+    
+    /**
+     * Variable privada: cliente para consultar la API de Estados de guías de la gestion local correspondiente 
+     */
     private EstadoGuiaLocalClient estadoGuiaLocClient;
-
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Parametrica
+     */   
     @EJB
     private ParametricaFacade paramFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de TipoParam
+     */   
     @EJB
     private TipoParamFacade tipoParamFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Guia
+     */   
     @EJB
     private GuiaFacade guiaFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de la entidad gestionada
+     */ 
     @EJB
     private ControlFacade controlFacade;
     
+    /**
+     * Constructor
+     */
     public MbControl() {
     }
 
@@ -135,6 +254,10 @@ public class MbControl {
         this.lstResultados = lstResultados;
     }
 
+    /**
+     * Método que obtiene un control según la Guía y el usuario que correspondan
+     * @return Control control existente o nulo según corresponda
+     */
     public Control getControl() {
         // chequeo la existencia de un control existente
         control = controlFacade.getExistente(guia, usLogueado);
@@ -250,6 +373,9 @@ public class MbControl {
      * Métodos de inicialización **
      ******************************/
  
+    /**
+     * Método que inicializa las entidades a gestionar, el bean de sesión y el usuario
+     */    
     @PostConstruct
     public void init(){
         List<Parametrica> lstParam;
@@ -462,7 +588,8 @@ public class MbControl {
     }
 
     /**
-     * Método para registrar un Control realizado a una Guía por el Usuario
+     * Método para registrar un Control realizado a una Guía por el Usuario.
+     * Consume la API de gestión local que corresponda para obtener la Guía y actualizar su estado.
      */
     public void saveControl(){
         control.setObs(obs);
@@ -528,6 +655,9 @@ public class MbControl {
         }
     }
     
+    /**
+     * Método para limpiar el formulario de registro de los resultados del control
+     */
     public void limpiarFrmRegControl(){
         control = new Control();
         parmSelected = new EntidadCombo();
@@ -538,9 +668,10 @@ public class MbControl {
      *********************/
     
     /**
-     * Método para obtener una Paramétrica según su id
-     * @param key
-     * @return 
+     * Método para obtener una Paramétrica según su id.
+     * Utilizado por el converter
+     * @param key Long id de la paramétrica a buscar
+     * @return Object paramétrica obtenida
      */
     private Object getParametrica(Long key) {
         return paramFacade.find(key);
@@ -548,11 +679,12 @@ public class MbControl {
     
     /**
      * Método para validar cuit. Si es válido devuelve "", y si no un mensaje.
-     * @param cuit
-     * @return 
+     * Utilizado por consultarGuiasPorRem() y consultarGuiasPorDest()
+     * @param cuit Long cuit a validar
+     * @return String cadena vacía o un mensaje de error
      */
     private String validarCuit(Long cuit) {
-        String result = "";
+        String resultCuit = "";
         
         String strCuit = String.valueOf(cuit);
         // dejo solo números
@@ -583,19 +715,20 @@ public class MbControl {
             Object oAux = aux;
             
             if(!oUltimo.equals(oAux)){
-                result = "El CUIT ingresado es inválido.";
+                resultCuit = "El CUIT ingresado es inválido.";
             }         
         }    
-        return result;
+        return resultCuit;
     }
 
     /**
-     * Método para enviar un correo a la Autoridad local que emitió la Guía comunicando el resultado negativo del control
-     * @return 
+     * Método para enviar un correo a la Autoridad local que emitió la Guía comunicando el resultado negativo del control.
+     * Utilizado por saveControl()
+     * @return boolean true si el envío fue exitoso y false en caso de error
      */  
     private boolean enviarCorreo() {
         SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        boolean result;
+        boolean resultCorreo;
         String bodyMessage;
         mensaje = new MimeMessage(mailSesion);
         bodyMessage = "<p>A la Autoridad Local de Bosques de la Provinica de " + guia.getCompLocal().getProvincia() + "</p> "
@@ -630,14 +763,14 @@ public class MbControl {
             
             Transport.send(mensaje);
             
-            result = true;
+            resultCorreo = true;
             
         }catch(MessagingException ex){
-            result = false;
+            resultCorreo = false;
             LOG.fatal("Hubo un error enviando el correo de notificación de resultado. " + ex.getMessage());
         }
         
-        return result;
+        return resultCorreo;
     }
 
     

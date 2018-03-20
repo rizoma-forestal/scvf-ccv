@@ -10,14 +10,29 @@ import java.io.Serializable;
  */
 public class EntidadCombo implements Serializable{
     
+    /**
+     * Variable privada: Long identificador de la entidad
+     */
     private int id;
+    
+    /**
+     * Variable privada: String nombre del objeto
+     */
     private String nombre;
     
+    /**
+     * Constructor con parámetros
+     * @param id int identificador del objeto
+     * @param nombre String nombre del objeto
+     */
     public EntidadCombo(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }    
     
+    /**
+     * Cosntructor por defecto
+     */
     public EntidadCombo() {
         
     }       

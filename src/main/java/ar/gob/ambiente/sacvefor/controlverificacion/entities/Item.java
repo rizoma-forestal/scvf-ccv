@@ -20,12 +20,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**
-     * El código origen encapsula los atributos del Producto de origen separados por '|' en este orden
+     * Variable privada: El código origen encapsula los atributos del Producto de origen separados por '|' en este orden
      * nombreCientifico: nombre científico de la Especie constituido por 'Género/Especie'
      * nombreVulgar: nombre vulgar de la Especie definido de manera local
      * clase: clase en la que se comercializa el Producto definido de manera local
@@ -38,7 +42,7 @@ public class Item implements Serializable {
     private String codigoOrigen;
     
     /**
-     * Nombre Científico cacheado del Producto
+     * Variable privada: Nombre Científico cacheado del Producto
      * Se incluye en el código del producto trazable
      */
     @Column (nullable=false, length=100)
@@ -47,7 +51,7 @@ public class Item implements Serializable {
     private String nombreCientifico;
     
     /**
-     * Nombre vulgar cacheado del Producto
+     * Variable privada: Nombre vulgar cacheado del Producto
      * Se incluye en el código del producto trazable
      */
     @Column (nullable=false, length=50)
@@ -56,7 +60,7 @@ public class Item implements Serializable {
     private String nombreVulgar;
     
     /**
-     * Clase cacheada del Producto
+     * Variable privada: Clase cacheada del Producto
      * Se incluye en el código del producto trazable
      */
     @Column (nullable=false, length=30)
@@ -65,7 +69,7 @@ public class Item implements Serializable {
     private String clase;
     
     /**
-     * Unidad de medida cacheada del Producto
+     * Variable privada: Unidad de medida cacheada del Producto
      * Se incluye en el código del producto trazable
      */    
     @Column (nullable=false, length=30)
@@ -74,14 +78,14 @@ public class Item implements Serializable {
     private String unidad;
     
     /**
-     * Cantidad del Producto incluído en el item
+     * Variable privada: Cantidad del Producto incluído en el item
      * Cupo
      */
     @Column
     private float total;
     
     /**
-     * Equivalencia del total por unidad del Producto, en Kg.
+     * Variable privada: Equivalencia del total por unidad del Producto, en Kg.
      */
     @Column
     private float totalKg;

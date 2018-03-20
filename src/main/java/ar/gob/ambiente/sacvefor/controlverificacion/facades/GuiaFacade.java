@@ -16,22 +16,32 @@ import javax.persistence.Query;
 @Stateless
 public class GuiaFacade extends AbstractFacade<Guia> {
 
+    /**
+     * Variable privada: EntityManager al que se le indica la unidad de persistencia mediante la cual accederá a la base de datos
+     */   
     @PersistenceContext(unitName = "sacvefor-controlVerificacionPU")
     private EntityManager em;
 
+    /**
+     * Método que implementa el abstracto para la obtención del EntityManager
+     * @return EntityManager para acceder a datos
+     */  
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Constructor
+     */
     public GuiaFacade() {
         super(Guia.class);
     }
     
     /**
      * Metodo para validar una Guía existente según el codigo
-     * @param codigo
-     * @return 
+     * @param codigo String identificador único de la guía
+     * @return Guia guía correspondiente al código
      */
     public Guia getExistente(String codigo) {
         List<Guia> lstGuias;
@@ -51,8 +61,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
 
     /**
      * Método para obetener las Guías cuyo remitente tiene el CUIT recibido
-     * @param cuitOrigen 
-     * @return 
+     * @param cuitOrigen Long cuit del titular que remite la guía
+     * @return List<Guia> listado de las guías remitidas por el orgen remitido
      */
     public List<Guia> getByOrigen(Long cuitOrigen){
         em = getEntityManager();
@@ -65,8 +75,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método para obetener las Guías vigentes cuyo remitente tiene el CUIT recibido
-     * @param cuitOrigen
-     * @return 
+     * @param cuitOrigen Long cuit del titular que remite la guía
+     * @return List<Guia> listado de las guías vigentes remitidas por el orgen remitido
      */
     public List<Guia> getVigByOrigen(Long cuitOrigen){
         String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
@@ -85,8 +95,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método para obetener las Guías cuyo destino tiene el CUIT recibido
-     * @param cuitDestino
-     * @return 
+     * @param cuitDestino Long cuit del destinatario al cual se le envía la guía
+     * @return List<Guia> listado de las guías enviadas al destinatario
      */
     public List<Guia> getByDestino(Long cuitDestino){
         em = getEntityManager();
@@ -99,8 +109,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método para obetener las Guías vigentes cuyo destino tiene el CUIT recibido
-     * @param cuitDestino
-     * @return 
+     * @param cuitDestino Long cuit del destinatario al cual se le envía la guía
+     * @return List<Guia> listado de las guías vigentes enviadas al destinatario
      */
     public List<Guia> getVigByDestino(Long cuitDestino){
         String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
@@ -120,8 +130,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     /**
      * Método que devuelve las Guías vinculadas a un vehículo determinado
      * identificado por su matrícula
-     * @param matVehiculo : matrícula del Vehículo cuyas Guías se quiere obtener.
-     * @return 
+     * @param matVehiculo String matrícula del Vehículo cuyas Guías se quiere obtener.
+     * @return List<Guia> listado de las guías vinculadas al vehículo
      */
     public List<Guia> getByVehiculo(String matVehiculo){
         em = getEntityManager();
@@ -135,8 +145,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     /**
      * Devuelve la Guía vigente cuyo vehículo de transporte tiene la matrícula solicitada.
      * Se asume que no debería haber dos Guías vigentes vinculados a un mismo vehículo
-     * @param matVehiculo
-     * @return 
+     * @param matVehiculo String matrícula del Vehículo cuyas Guías vigentes se quiere obtener.
+     * @return listado de las guías vigentes vinculadas al vehículo
      */
     public Guia getVigByMatricula(String matVehiculo){
         String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
@@ -162,8 +172,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método que devuelve una Guía vigente según su código
-     * @param codigo
-     * @return 
+     * @param codigo String identificador único de la guía
+     * @return Guia guía vigente cuyo código se remitió
      */
     public Guia getVigByCodigo(String codigo){
         String vigente = ResourceBundle.getBundle("/Config").getString("Vigente");
@@ -188,8 +198,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método que devuelve las Guías que contengan items con el código de producto recibido
-     * @param codigoOrigen
-     * @return 
+     * @param codigoOrigen String código de origen de los productos cuyos items conforman las guías solicitadas
+     * @return List<Guia> listado de las guías correspondientes
      */
     public List<Guia> getByCodOrigen(String codigoOrigen){
         em = getEntityManager();
@@ -203,7 +213,7 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método que devuelve la Guías que contengan items con productos con el nombre científico recibido
-     * @param nombreCientifico
+     * @param nombreCientifico String nombre científico de los productos incluídos en las guías solicitadas
      * @return 
      */
     public List<Guia> getByNomCientifico(String nombreCientifico){
@@ -219,7 +229,7 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     /**
      * Método que devuelve la Guías que contengan items con productos con el nombre vulgar recibido
      * @param nombreVulgar
-     * @return 
+     * @return List<Guia> listado de las guías correspondientes
      */
     public List<Guia> getByNomVulgar(String nombreVulgar){
         em = getEntityManager();
@@ -233,8 +243,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método que devuelve las Guías que contengan items cuyo código de producto contenga el elemento recibido
-     * @param elemOrigen
-     * @return 
+     * @param elemOrigen String cadena a contener en los códigos de origen de los items incluídos en las guías buscadas
+     * @return List<Guia> listado de las guías correspondientes 
      */
     public List<Guia> getByElementoOrigen(String elemOrigen){
         em = getEntityManager();
@@ -248,8 +258,8 @@ public class GuiaFacade extends AbstractFacade<Guia> {
     
     /**
      * Método que devuleve las Guías locales registradas según la Provincia que las emitió
-     * @param provincia : Provincia emisora de la Guía
-     * @return 
+     * @param provincia String Provincia emisora de la Guía
+     * @return List<Guia> listado de las guías correspondientes
      */
     public List<Guia> getByProvincia(String provincia){
         em = getEntityManager();

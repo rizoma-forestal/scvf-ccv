@@ -5,6 +5,14 @@ UrlTerritorial=/gestionTerritorial/rest
 UrlEspecies=/especiesVegetales/rest
 UrlEntidades=/rue/rest
 
+# Usuarios de acceso a API's REST:
+# UsRestTerr => sacvefor (para el servicio de territorial)
+# UsRestTraz => scvf-traz (para Trazabilidad)
+UsRestTerr=sacvefor
+UsRestCtrl=scvf-ctrl
+# Tiempo de vigencia del token recibido
+TimeToken=3600000
+
 # Claves para encriptar y desencriptar las contraseñas de los usurios
 ClaveEncriptar=bosquesnativosycomunidad
 ClaveDesencriptar=trazabilidad

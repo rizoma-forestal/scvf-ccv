@@ -26,38 +26,42 @@ import javax.xml.bind.annotation.XmlTransient;
 public class PuestoControl implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**
-     * Nombre identificatorio del Puesto de control
+     * Variable privada: Nombre identificatorio del Puesto de control
      */
     @Column (length=50)
     @Size(message = "El campo nombre no puede tener más de 50 caracteres", max = 50)    
     private String nombre;
     
     /**
-     * Ruta o camino en el que se encuentra el Puesto de Control
+     * Variable privada: Ruta o camino en el que se encuentra el Puesto de Control
      */
     @Column (length=50)
     @Size(message = "El campo ruta no puede tener más de 50 caracteres", max = 50)        
     private String ruta;
     
     /**
-     * Altura en número o Km de la Ruta o Camino en el que se encuentra el Pusto de Control 
+     * Variable privada: Altura en número o Km de la Ruta o Camino en el que se encuentra el Pusto de Control 
      */
     @Column (length=20)
     @Size(message = "El campo altura no puede tener más de 20 caracteres", max = 20)        
     private String altura;
     
     /**
-     * Id de la Localidad en el Servicio de Gestión Territorial
+     * Variable privada: Id de la Localidad en el Servicio de Gestión Territorial
      */
     private Long idLocGt;
     
     /**
-     * Nombre de la Localidad donde está ubicado el Puesto de control
+     * Variable privada: Nombre de la Localidad donde está ubicado el Puesto de control
      * cacheado del servicio de Gestión Terrorial
      */
     @Column (nullable=false, length=50)
@@ -66,7 +70,7 @@ public class PuestoControl implements Serializable {
     private String localidad;
     
     /**
-     * Nombre del Departamento donde está ubicado el Puesto de control
+     * Variable privada: Nombre del Departamento donde está ubicado el Puesto de control
      * cacheado del servicio de Gestión Terrorial
      */    
     @Column (nullable=false, length=50)
@@ -75,7 +79,7 @@ public class PuestoControl implements Serializable {
     private String departamento;
     
     /**
-     * Nombre de la Provincia donde está ubicado el Puesto de control
+     * Variable privada: Nombre de la Provincia donde está ubicado el Puesto de control
      * cacheado del servicio de Gestión Terrorial
      */     
     @Column (nullable=false, length=50)
@@ -84,21 +88,21 @@ public class PuestoControl implements Serializable {
     private String provincia;
     
     /**
-     * Descripción del Puesto de control
+     * Variable privada: Descripción del Puesto de control
      */
     @Column (length=50)
     @Size(message = "El campo descripcion no puede tener más de 100 caracteres", max = 100) 
     private String descripcion;
 
     /**
-     * Listado de Usuarios que se desempeñan en el Puesto de control
+     * Variable privada: Listado de Usuarios que se desempeñan en el Puesto de control
      */
     @OneToMany (mappedBy="puestoControl", orphanRemoval = true)
     @Basic(fetch = FetchType.LAZY)
     private List<Usuario> usuarios;
     
     /**
-     * Condición de habilitado del Puesto de control
+     * Variable privada: Condición de habilitado del Puesto de control
      */
     private boolean habilitado;
     

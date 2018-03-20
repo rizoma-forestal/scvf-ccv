@@ -21,20 +21,61 @@ import javax.ejb.EJB;
  */
 public class MbParametrica implements Serializable{
 
+    /**
+     * Variable privada: Tipo para asignar a la paramétrica durante su registro o edición
+     */
     private TipoParam tipoParam;
+    
+    /**
+     * Variable privada: Listado de tipos para poblar el combo para su selección al insertar o editar
+     */
     private List<TipoParam> lstTipoParam;
+    
+    /**
+     * Variable privada: paramétrica gestionada
+     */
     private Parametrica parametrica;
+    
+    /**
+     * Variable privada: Listado de paramétricas registradas
+     */
     private List<Parametrica> lstParam;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán los tipos de paramétricas
+     */
     private List<EntidadCombo> lstTipoParamEC;
+    
+    /**
+     * Variable privada: identificación del tipo asignado
+     */
     private int idTipoParam;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de la vista detalle
+     */
     private boolean view;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de la vista de edición
+     */
     private boolean edit;
     
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Parametrica
+     */
     @EJB
     private ParametricaFacade paramFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de TipoParam
+     */
     @EJB
     private TipoParamFacade tipoParamFacade;    
     
+    /**
+     * Constructor
+     */
     public MbParametrica() {
     }
 
@@ -108,6 +149,10 @@ public class MbParametrica implements Serializable{
     /******************************
      * Mátodos de inicialización **
      ******************************/
+    
+    /**
+     * Método que inicializa las entidades a gestionar
+     */    
     @PostConstruct
     public void init(){
         tipoParam = new TipoParam();
@@ -327,7 +372,8 @@ public class MbParametrica implements Serializable{
      *********************/    
 
     /**
-     * Método que devuelve todas los TipoParam y los setea en un listado de EntidadCombo para su selección
+     * Método que devuelve todas los TipoParam y los setea en un listado de EntidadCombo para su selección.
+     * Utilizada por getLstTipoParamEC()
      */
     private void cargarTipoParam() {
         List<TipoParam> lstTpPrm;
