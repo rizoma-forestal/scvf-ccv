@@ -7,9 +7,11 @@ UrlEntidades=/rue/rest
 
 # Usuarios de acceso a API's REST:
 # UsRestTerr => sacvefor (para el servicio de territorial)
-# UsRestTraz => scvf-traz (para Trazabilidad)
+# UsRestTraz => scvf-ctrl (para Trazabilidad)
+# UsRestCgl => scvf-ctrl (para control y verificación)
 UsRestTerr=sacvefor
 UsRestCtrl=scvf-ctrl
+UsRestCgl=scvf-ctrl
 # Tiempo de vigencia del token recibido
 TimeToken=3600000
 

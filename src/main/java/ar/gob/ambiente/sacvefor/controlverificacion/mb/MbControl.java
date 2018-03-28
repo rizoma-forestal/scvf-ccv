@@ -3,6 +3,7 @@ package ar.gob.ambiente.sacvefor.controlverificacion.mb;
 
 import ar.gob.ambiente.sacvefor.controlverificacion.cgl.client.EstadoGuiaLocalClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.cgl.client.GuiaLocalClient;
+import ar.gob.ambiente.sacvefor.controlverificacion.cgl.client.UsuarioApiClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.entities.Control;
 import ar.gob.ambiente.sacvefor.controlverificacion.entities.Guia;
 import ar.gob.ambiente.sacvefor.controlverificacion.entities.Parametrica;
@@ -14,6 +15,8 @@ import ar.gob.ambiente.sacvefor.controlverificacion.facades.ParametricaFacade;
 import ar.gob.ambiente.sacvefor.controlverificacion.facades.TipoParamFacade;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.EntidadCombo;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.JsfUtil;
+import ar.gob.ambiente.sacvefor.controlverificacion.util.Token;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +38,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
@@ -175,6 +179,21 @@ public class MbControl {
      * Variable privada: cliente para consultar la API de Estados de guías de la gestion local correspondiente 
      */
     private EstadoGuiaLocalClient estadoGuiaLocClient;
+    
+    /**
+     * Variable privada: UsuarioApiClient Cliente para la API REST de Gestión local
+     */    
+    private UsuarioApiClient usuarioClientCgl;
+    
+    /**
+     * Variable privada: Token obtenido al validar el usuario de la API de Gestión local
+     */     
+    private Token tokenCgl;
+    
+    /**
+     * Variable privada: Token en formato String del obtenido al validar el usuario de la API de Gestión local
+     */ 
+    private String strTokenCgl;
     
     /**
      * Variable privada: EJB inyectado para el acceso a datos de Parametrica
@@ -610,23 +629,55 @@ public class MbControl {
                 // actualizo el estado en el CGL
                 List<ar.gob.ambiente.sacvefor.servicios.cgl.EstadoGuia> lstEstados;
                 ar.gob.ambiente.sacvefor.servicios.cgl.Guia guiaLocal;
+                
+                // instancio el cliente para la selección del Estado de guía, obtengo el token si no está seteado o está vencido
+                if(tokenCgl == null){
+                    getTokenCgl();
+                }else try {
+                    if(!tokenCgl.isVigente()){
+                        getTokenCgl();
+                    }
+                } catch (IOException ex) {
+                    LOG.fatal("Hubo un error obteniendo la vigencia del token de Gestión local. " + ex.getMessage());
+                }
                 estadoGuiaLocClient = new EstadoGuiaLocalClient(guia.getCompLocal().getUrl());
                 GenericType<List<ar.gob.ambiente.sacvefor.servicios.cgl.EstadoGuia>> gTypeEstado = new GenericType<List<ar.gob.ambiente.sacvefor.servicios.cgl.EstadoGuia>>() {};
-                Response response = estadoGuiaLocClient.findByQuery_JSON(Response.class, resultado.getNombre());
+                Response response = estadoGuiaLocClient.findByQuery_JSON(Response.class, resultado.getNombre(), tokenCgl.getStrToken());
                 lstEstados = response.readEntity(gTypeEstado);
                 estadoGuiaLocClient.close();
                 if(!lstEstados.isEmpty()){
                     // obtengo la Guía desde el CGL
                     List<ar.gob.ambiente.sacvefor.servicios.cgl.Guia> lstG;
+                    
+                    // instancio el cliente para la selección de la Guía, obtengo el token si no está seteado o está vencido
+                    if(tokenCgl == null){
+                        getTokenCgl();
+                    }else try {
+                        if(!tokenCgl.isVigente()){
+                            getTokenCgl();
+                        }
+                    } catch (IOException ex) {
+                        LOG.fatal("Hubo un error obteniendo la vigencia del token de Gestión local. " + ex.getMessage());
+                    }
                     guiaLocalClient = new GuiaLocalClient(guia.getCompLocal().getUrl());
                     GenericType<List<ar.gob.ambiente.sacvefor.servicios.cgl.Guia>> gTypeGuia = new GenericType<List<ar.gob.ambiente.sacvefor.servicios.cgl.Guia>>() {};
-                    response = guiaLocalClient.findByQuery_JSON(Response.class, guia.getCodigo(), null, null);
+                    response = guiaLocalClient.findByQuery_JSON(Response.class, guia.getCodigo(), null, null, tokenCgl.getStrToken());
                     lstG = response.readEntity(gTypeGuia);
                     if(!lstG.isEmpty()){
                         guiaLocal = lstG.get(0);
                         guiaLocal.setEstado(lstEstados.get(0));
                         // actualizo
-                        response = guiaLocalClient.edit_JSON(guiaLocal, String.valueOf(guiaLocal.getId()));
+                        // instancio el cliente para la edición de la Guía, obtengo el token si no está seteado o está vencido
+                        if(tokenCgl == null){
+                            getTokenCgl();
+                        }else try {
+                            if(!tokenCgl.isVigente()){
+                                getTokenCgl();
+                            }
+                        } catch (IOException ex) {
+                            LOG.fatal("Hubo un error obteniendo la vigencia del token de Gestión local. " + ex.getMessage());
+                        }
+                        response = guiaLocalClient.edit_JSON(guiaLocal, String.valueOf(guiaLocal.getId()), tokenCgl.getStrToken());
                         guiaLocalClient.close();
                         // continúo según el mensaje recibido
                         if(response.getStatus() == 200){
@@ -772,7 +823,25 @@ public class MbControl {
         
         return resultCorreo;
     }
-
+    
+    /**
+     * Método privado que obtiene y setea el token para autentificarse ante la API rest de Gestión local para la provincia que corresponda
+     * Crea el campo de tipo Token con la clave recibida y el momento de la obtención.
+     * Utilizado por saveControl()
+     */
+    private void getTokenCgl(){
+        try{
+            usuarioClientCgl = new UsuarioApiClient(guia.getCompLocal().getUrl());
+            Response responseUs = usuarioClientCgl.authenticateUser_JSON(Response.class, ResourceBundle.getBundle("/Config").getString("UsRestCgl"));
+            MultivaluedMap<String, Object> headers = responseUs.getHeaders();
+            List<Object> lstHeaders = headers.get("Authorization");
+            strTokenCgl = (String)lstHeaders.get(0); 
+            tokenCgl = new Token(strTokenCgl, System.currentTimeMillis());
+            usuarioClientCgl.close();
+        }catch(ClientErrorException ex){
+            System.out.println("Hubo un error obteniendo el token para la API Gestión local: " + ex.getMessage());
+        }
+    }
     
     /***************************
     ** Converter Parametrica  **

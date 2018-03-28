@@ -110,7 +110,7 @@ public class UsuarioApi implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.gob.ambiente.sacvefor.trazabilidad.entities.UsuarioApi[ id=" + id + " ]";
+        return "ar.gob.ambiente.sacvefor.controlverificacion.entities.UsuarioApi[ id=" + id + " ]";
     }
     
 }

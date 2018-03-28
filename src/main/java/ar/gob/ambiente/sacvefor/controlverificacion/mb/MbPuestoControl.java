@@ -3,7 +3,6 @@ package ar.gob.ambiente.sacvefor.controlverificacion.mb;
 
 import ar.gob.ambiente.sacvefor.controlverificacion.entities.PuestoControl;
 import ar.gob.ambiente.sacvefor.controlverificacion.facades.PuestoControlFacade;
-import static ar.gob.ambiente.sacvefor.controlverificacion.mb.MbComponenteLocal.LOG;
 import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.DepartamentoClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.LocalidadClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.ProvinciaClient;
