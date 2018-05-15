@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -281,16 +282,28 @@ public class GuiaFacadeREST {
         try{
             // obtengo la Guía
             Guia guia = guiaFacade.find(id);
-            // obtengo y seteo el estado
-            Parametrica paramEstado = paramFacade.find(entity.getEstado().getId());
-            // actualizo la Guía con el Estado
-            guia.setEstado(paramEstado);
-            // si está cerrando la Guía, seteo la fecha de cierre.
-            if(paramEstado.getNombre().equals(ResourceBundle.getBundle("/Config").getString("Cerrada"))){
-                // seteo la fecha de cierre
-                guia.setFechaCierre(entity.getFechaCierre());
+            // verifico los cambios a actualizar
+            if(!Objects.equals(guia.getEstado().getId(), entity.getEstado().getId())){
+                // si hay cambio de estado obtengo y seteo el estado
+                Parametrica paramEstado = paramFacade.find(entity.getEstado().getId());
+                // actualizo la Guía con el Estado
+                guia.setEstado(paramEstado);
+                // si está cerrando la Guía, seteo la fecha de cierre.
+                if(paramEstado.getNombre().equals(ResourceBundle.getBundle("/Config").getString("Cerrada"))){
+                    // seteo la fecha de cierre
+                    guia.setFechaCierre(entity.getFechaCierre());
+                }
+            }else if(!Objects.equals(guia.getCuitDestino(), entity.getCuitDestino())){
+                // hay cambio de destino
+                guia.setCuitDestino(entity.getCuitDestino());
+                guia.setNombreDestino(entity.getNombreDestino());
+                guia.setLocDestino(entity.getLocDestino());
+                // verifico si hubo cambio de fecha de vencimiento
+                if(guia.getFechaVencimiento().compareTo(entity.getFechaVencimiento()) != 0){
+                    // actualizo
+                    guia.setFechaVencimiento(entity.getFechaVencimiento());
+                }
             }
-
             // actualizo
             guiaFacade.edit(guia);
             // armo la respuesta exitosa
