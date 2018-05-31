@@ -88,6 +88,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-0-00022-2017",
      *              "tipo": "TRANSPORTE",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -174,6 +175,7 @@ public class GuiaFacadeREST {
                 guia.setDniConductor(entity.getDniConductor());
                 guia.setFechaEmision(entity.getFechaEmision());
                 guia.setFechaVencimiento(entity.getFechaVencimiento());
+                guia.setCodQr(entity.getCodQr());
                 // persisto
                 guiaFacade.create(guia);
                 // armo la respuesta exitosa
@@ -247,6 +249,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-10-00001-2017",
      *              "tipo": "REMITO",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -303,6 +306,10 @@ public class GuiaFacadeREST {
                     // actualizo
                     guia.setFechaVencimiento(entity.getFechaVencimiento());
                 }
+            }else if(entity.getFechaVencimiento().after(guia.getFechaVencimiento())){
+                // si hay extensión de vigencia, actualizo el qr y la fecha de vencimiento
+                guia.setFechaVencimiento(entity.getFechaVencimiento());
+                guia.setCodQr(entity.getCodQr());
             }
             // actualizo
             guiaFacade.edit(guia);
@@ -365,6 +372,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-0-00022-2017",
      *              "tipo": "TRANSPORTE",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -440,6 +448,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-0-00022-2017",
      *              "tipo": "TRANSPORTE",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -466,6 +475,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-10-00001-2017",
      *              "tipo": "REMITO",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -556,6 +566,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-10-00001-2017",
      *              "tipo": "REMITO",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",
@@ -598,6 +609,7 @@ public class GuiaFacadeREST {
      *              "numfuente": "EE-0-00022-2017",
      *              "tipo": "TRANSPORTE",
      *              "tipofuente": "GUIA MADRE",
+     *              "codQr": "sdjkfnññNhbSdsf16666b8we",
      *              "componentelocal":{
      *                  "id": "3",
      *                  "correoelectronico": "componente@[provincia].gob.ar",

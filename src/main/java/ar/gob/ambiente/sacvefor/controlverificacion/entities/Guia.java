@@ -197,13 +197,28 @@ public class Guia implements Serializable {
      * en el momento en que el Destinatario cierre la Guía.
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date fechaCierre;      
+    private Date fechaCierre;
+    
+    /**
+     * Variable privada: guarda la cadena codificada con md5 
+     * a partir del código de la guía y la fecha de emisión 
+     * para generar el código QR de la guía en papel.
+     */   
+    private String codQr;    
 
     /**
      * Constructor
      */
     public Guia(){
         items = new ArrayList<>();
+    }
+
+    public String getCodQr() {
+        return codQr;
+    }
+
+    public void setCodQr(String codQr) {
+        this.codQr = codQr;
     }
 
     public String getLocOrigen() {
