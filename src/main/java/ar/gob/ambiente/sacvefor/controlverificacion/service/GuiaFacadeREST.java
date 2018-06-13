@@ -175,7 +175,6 @@ public class GuiaFacadeREST {
                 guia.setDniConductor(entity.getDniConductor());
                 guia.setFechaEmision(entity.getFechaEmision());
                 guia.setFechaVencimiento(entity.getFechaVencimiento());
-                guia.setCodQr(entity.getCodQr());
                 // persisto
                 guiaFacade.create(guia);
                 // armo la respuesta exitosa
@@ -309,7 +308,6 @@ public class GuiaFacadeREST {
             }else if(entity.getFechaVencimiento().after(guia.getFechaVencimiento())){
                 // si hay extensión de vigencia, actualizo el qr y la fecha de vencimiento
                 guia.setFechaVencimiento(entity.getFechaVencimiento());
-                guia.setCodQr(entity.getCodQr());
             }
             // actualizo
             guiaFacade.edit(guia);
