@@ -30,12 +30,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Guia implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**
-     * Cadena que constituye el código único de la Guía,
+     * Variable privada: Código único de la Guía,
      * el formato se configurará en el archivo de propiedades Config.
      */
     @Column (nullable=false, length=20, unique=true)
@@ -44,7 +48,7 @@ public class Guia implements Serializable {
     private String codigo;
     
     /**
-     * Estado en el que se encuentra la Guía, podrán ser:
+     * Variable privada: Estado en el que se encuentra la Guía, podrán ser:
      * Vigente,
      * Cerrada,
      * Anulada,
@@ -57,7 +61,7 @@ public class Guia implements Serializable {
     private Parametrica estado;    
     
     /**
-     * Tipo de Guía
+     * Variable privada: Tipo de Guía
      * Primaria si proviene de un CGL
      * Trazabilidad si proviene del CGT
      */
@@ -67,7 +71,7 @@ public class Guia implements Serializable {
     private String tipo;
     
     /**
-     * Tipo de Guía que dio origen a los productos
+     * Variable privada: Tipo de Guía que dio origen a los productos
      * Solo para Guías primarias
      */
     @Column (nullable=false, length=50)
@@ -76,7 +80,7 @@ public class Guia implements Serializable {
     private String tipoFuente;
     
     /**
-     * Cadena que constituye el número identificatorio de la Guía fuente de Productos,
+     * Variable privada: Número identificatorio de la Guía fuente de Productos,
      * Solo para Guías primarias
      */
     @Column (nullable=false, length=30)
@@ -92,7 +96,7 @@ public class Guia implements Serializable {
     private List<Item> items;      
 
     /**
-     * En los casos que la Guía haya sido generada por un Componente local, lo vincula.
+     * Variable privada: En los casos que la Guía haya sido generada por un Componente local, lo vincula.
      */
     @ManyToOne
     @JoinColumn(name="complocal_id")
@@ -100,7 +104,7 @@ public class Guia implements Serializable {
     private ComponenteLocal compLocal;
     
     /**
-     * Nombre completo de la Entidad origen que remite la Guía
+     * Variable privada: Nombre completo de la Entidad origen que remite la Guía
      */
     @Column (nullable=false, length=50)
     @NotNull(message = "El campo Nombre de Origen no puede ser nulo")
@@ -108,12 +112,12 @@ public class Guia implements Serializable {
     private String nombreOrigen;
     
     /**
-     * Cuit correspondiente a la Entidad origen que remite la Guía
+     * Variable privada: Cuit correspondiente a la Entidad origen que remite la Guía
      */
     private Long cuitOrigen;
     
     /**
-     * Ubicación del orígen de la Guía.
+     * Variable privada: Ubicación del orígen de la Guía.
      * Ej: Villa Candela - Jujuy
      */
     @Column (length=100)
@@ -121,7 +125,7 @@ public class Guia implements Serializable {
     private String locOrigen;
     
     /**
-     * Nombre completo de la Entidad destinataria de la Guía
+     * Variable privada: Nombre completo de la Entidad destinataria de la Guía
      */
     @Column (nullable=false, length=50)
     @NotNull(message = "El campo Nombre de Origen no puede ser nulo")
@@ -129,12 +133,12 @@ public class Guia implements Serializable {
     private String nombreDestino;
     
     /**
-     * Cuit correspondiente a la Entidad destinataria de la Guía
+     * Variable privada: Cuit correspondiente a la Entidad destinataria de la Guía
      */
     private Long cuitDestino;
     
     /**
-     * Ubicación del destino de la Guía.
+     * Variable privada: Ubicación del destino de la Guía.
      * Ej: Los cardos - Salta
      */
     @Column (length=100)
@@ -142,7 +146,7 @@ public class Guia implements Serializable {
     private String locDestino;    
     
     /**
-     * Matrícula correspondiente al Vehículo de transporte vinculado a la Guía
+     * Variable privada: Matrícula correspondiente al Vehículo de transporte vinculado a la Guía
      */
     @Column (nullable=false, length=15)
     @NotNull(message = "El campo Matrícula del Vehículo no puede ser nulo")
@@ -150,14 +154,14 @@ public class Guia implements Serializable {
     private String matVehiculo;    
     
     /**
-     * Si lo hubiera, matrícula correspondiente al acoplado del Vehículo de transporte vinculado a la Guía
+     * Variable privada: Si lo hubiera, matrícula correspondiente al acoplado del Vehículo de transporte vinculado a la Guía
      */
     @Column (length=15)
     @Size(message = "El campo Matrícula del Vehículo no puede tener más de 15 caracteres", max = 15)  
     private String matAcoplado; 
     
     /**
-     * Nombre completo del Conductor del Vehículo de transporte vinculado a la Guía
+     * Variable privada: Nombre completo del Conductor del Vehículo de transporte vinculado a la Guía
      */
     @Column (nullable=false, length=50)
     @NotNull(message = "El campo Nombre del Conductor del Vehículo no puede ser nulo")
@@ -165,37 +169,39 @@ public class Guia implements Serializable {
     private String nombreConductor;    
     
     /**
-     * DNI correspondiente al Conductor del Vehículo de transporte vinculado a la Guía
+     * Variable privada: DNI correspondiente al Conductor del Vehículo de transporte vinculado a la Guía
      */
     private Long dniConductor;    
     
     /**
-     * Fecha de registro de la Guía
+     * Variable privada: Fecha de registro de la Guía
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaAlta;  
     
     /**
-     * Fecha de emisión de la Guía.
+     * Variable privada: Fecha de emisión de la Guía.
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaEmision;    
     
     /**
-     * Fecha de emisión de vencimiento de la Guía.
+     * Variable privada: Fecha de emisión de vencimiento de la Guía.
      * Si correspondiera
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaVencimiento;     
     
     /**
-     * Fecha de cierre de la Guía. Se seteará desde el CGT mediante la API REST
+     * Variable privada: Fecha de cierre de la Guía. Se seteará desde el CGT mediante la API REST
      * en el momento en que el Destinatario cierre la Guía.
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date fechaCierre;      
+    private Date fechaCierre; 
 
-
+    /**
+     * Constructor
+     */
     public Guia(){
         items = new ArrayList<>();
     }

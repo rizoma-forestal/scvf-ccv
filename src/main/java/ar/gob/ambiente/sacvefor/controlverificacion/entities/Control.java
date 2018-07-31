@@ -32,12 +32,16 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public class Control implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Variable privada: Identificador único
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     /**
-     * Guía que es objeto del control
+     * Variable privada: Guía que es objeto del control
      */
     @Audited(targetAuditMode = NOT_AUDITED)
     @ManyToOne
@@ -46,13 +50,13 @@ public class Control implements Serializable {
     private Guia guia;
     
     /**
-     * Fecha de registro de la Guía
+     * Variable privada: Fecha de registro de la Guía
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaHora;
     
     /**
-     * Usuario que realiza el control
+     * Variable privada: Usuario que realiza el control
      */
     @Audited(targetAuditMode = NOT_AUDITED)
     @ManyToOne
@@ -61,7 +65,7 @@ public class Control implements Serializable {
     private Usuario usuario;
     
     /**
-     * Resultado del control realizado
+     * Variable privada: Resultado del control realizado
      */
     @Audited(targetAuditMode = NOT_AUDITED)
     @ManyToOne
@@ -70,41 +74,42 @@ public class Control implements Serializable {
     private Parametrica resultado;
     
     /**
-     * Observaciones que pudieran surgir del control
+     * Variable privada: Observaciones que pudieran surgir del control
      */
     @Column (length=500)
     @Size(message = "El campo Observaciones no puede tener más de 500 caracteres", max = 500)      
     private String obs;
     
     /**
-     * Campo que mostrará la fecha de las revisiones
-     * No se persiste
+     * Variable privada no persistida: Campo que mostrará la fecha de las revisiones
      */    
     @Transient
     private Date fechaRevision;   
     
     /**
-     * Campo que muestra la fecha y hora del control como string, para el listado de controles
+     *  Variable privada no persistida: Campo que muestra la fecha y hora del control como string, para el listado de controles
      */
     @Transient
     private String strFechaHora;
 
     /**
-     * Ruta o camino en el que se encuentra el Puesto que realizó el Control
-     * Cacheado de la entidad Puesto de Control, del Usuario
-     * No persistido, solo para la API
+     * Variable privada no persistida: Ruta o camino en el que se encuentra el Puesto que realizó el Control
+     * Cacheado de la entidad Puesto de Control, del Usuario. Solo para la API
      */
     @Transient
     private String ruta;
     
     /**
-     * Altura en número o Km de la Ruta o camino en el que se encuentra el Puesto que realizó el Control
-     * Cacheado de la entidad Puesto de Control, del Usuario
-     * No persistido, solo para la API
+     * Variable privada no persistida: Altura en número o Km de la Ruta o camino en el que se encuentra el Puesto que realizó el Control
+     * Cacheado de la entidad Puesto de Control, del Usuario. Solo para la API
      */    
     @Transient
     private String altura;
 
+    /**
+     * Método que devuleve la fecha y hora de control como un string
+     * @return String fecha y hora formateados
+     */
     public String getStrFechaHora() {
         DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
         DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
@@ -156,6 +161,10 @@ public class Control implements Serializable {
         this.fechaHora = fechaHora;
     }
 
+    /**
+     * Método que devuelve el usuario que realizó el control, no incluído en la API
+     * @return Usuario usuario de control
+     */
     @XmlTransient
     public Usuario getUsuario() {
         return usuario;

@@ -30,7 +30,9 @@ public class ApplicationConfig extends Application {
         resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.GuiaFacadeREST.class);
         resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.ParametricaFacadeREST.class);
         resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.PuestoControlFacadeREST.class);
+        resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.RestSecurityFilter.class);
         resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.TipoParamFacadeREST.class);
+        resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.UsuarioApiResource.class);
         resources.add(ar.gob.ambiente.sacvefor.controlverificacion.service.UsuarioFacadeREST.class);
     }
     

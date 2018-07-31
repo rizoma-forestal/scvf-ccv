@@ -9,24 +9,38 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 /**
- * Acceso a datos para la entidad ComponenteLocal
+ * Acceso a datos para la gestión de la Entidad ComponenteLocal
  * @author rincostante
  */
 @Stateless
 public class ComponenteLocalFacade extends AbstractFacade<ComponenteLocal> {
 
+    /**
+     * Variable privada: EntityManager al que se le indica la unidad de persistencia mediante la cual accederá a la base de datos
+     */  
     @PersistenceContext(unitName = "sacvefor-controlVerificacionPU")
     private EntityManager em;
 
+    /**
+     * Método que implementa el abstracto para la obtención del EntityManager
+     * @return EntityManager para acceder a datos
+     */  
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Constructor
+     */
     public ComponenteLocalFacade() {
         super(ComponenteLocal.class);
     }
     
+    /**
+     * Método de AbstractFacade sobreescrito para que devuelva todos los componentes locales ordenados alfabeticamente por su Provincia
+     * @return List<ComponenteLocal> listado de todos los componentes locales ordenados
+     */
     @Override
     public List<ComponenteLocal> findAll(){
         em = getEntityManager();
@@ -38,8 +52,8 @@ public class ComponenteLocalFacade extends AbstractFacade<ComponenteLocal> {
 
     /**
      * Metodo para validar un Componente existente según el nombre de su Provincia
-     * @param provincia
-     * @return 
+     * @param provincia String Nombre de la Provincia del componente local
+     * @return ComponenteLocal Componente local obtenido
      */
     public ComponenteLocal getExistente(String provincia){
         List<ComponenteLocal> lstCuentas;
@@ -59,7 +73,7 @@ public class ComponenteLocalFacade extends AbstractFacade<ComponenteLocal> {
 
     /**
      * Método para obtener todos los Componentes habilitados
-     * @return 
+     * @return List<ComponenteLocal> listado de los componentes locales habilitados
      */
     public List<ComponenteLocal> getHabilitados(){
         em = getEntityManager();

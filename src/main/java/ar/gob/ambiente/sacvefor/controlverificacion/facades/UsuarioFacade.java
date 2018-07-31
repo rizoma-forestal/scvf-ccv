@@ -15,22 +15,32 @@ import javax.persistence.Query;
 @Stateless
 public class UsuarioFacade extends AbstractFacade<Usuario> {
 
+    /**
+     * Variable privada: EntityManager al que se le indica la unidad de persistencia mediante la cual accederá a la base de datos
+     */ 
     @PersistenceContext(unitName = "sacvefor-controlVerificacionPU")
     private EntityManager em;
 
+    /**
+     * Método que implementa el abstracto para la obtención del EntityManager
+     * @return EntityManager para acceder a datos
+     */ 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Constructor
+     */
     public UsuarioFacade() {
         super(Usuario.class);
     }
     
     /**
      * Método para validar la existencia de un Usuario según su DNI, utilizado como login
-     * @param login : DNI del Usuario
-     * @return 
+     * @param login Long DNI del Usuario
+     * @return Usuario usuario correspondiente
      */
     public Usuario getExistente(Long login) {
         List<Usuario> lstUsuarios;
@@ -51,7 +61,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     /**
      * Mátodo que solo devuelve los Usuarios habilitados.
      * Para poblar combos de selección.
-     * @return 
+     * @return List<Usuario> listado de los usuario habilitados
      */
     public List<Usuario> getHabilitados(){
         em = getEntityManager();
@@ -64,7 +74,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     /**
      * Mátodo que solo devuelve los Usuarios habilitados.
      * Para poblar combos de selección.
-     * @return 
+     * @return List<Usuario> listado de los usuarios ordenados por nombre completo
      */
     @Override
     public List<Usuario> findAll(){
@@ -77,9 +87,9 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
 
     /**
      * Método para validar la existencia de un Usuario con las credenicales recibidas
-     * @param login : DNI del Usuario
-     * @param clave : clave encriptada
-     * @return 
+     * @param login Long DNI del Usuario dni del usuario a validar
+     * @param clave String clave encriptada clave del usuario a validar
+     * @return Usuario usuario validado
      */
     public Usuario validar(Long login, String clave){
         List<Usuario> lUs;

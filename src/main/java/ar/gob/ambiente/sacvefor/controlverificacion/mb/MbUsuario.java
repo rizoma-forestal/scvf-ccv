@@ -34,31 +34,96 @@ import org.apache.log4j.Logger;
  */
 public class MbUsuario {
 
+    /**
+     * Variable privada: usuario gestionado
+     */
     private Usuario usuario;
+    
+    /**
+     * Variable privada: listado de los usuarios registrados
+     */
     private List<Usuario> lstUsuarios;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán los puestos de control
+     */
     private List<EntidadCombo> lstPuestos;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán los roles de los usuarios
+     */
     private List<EntidadCombo> lstRoles;
+    
+    /**
+     * Variable privada: identificador del puesto de control seleccionado para el usuario
+     */
     private int idPuesto;
+    
+    /**
+     * Variable privada: identificador del rol asignado al usuario
+     */
     private int idRol;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de vista detalle
+     */
     private boolean view;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de edición
+     */
     private boolean edit;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */  
     static final Logger LOG = Logger.getLogger(MbUsuario.class);
+    
+    /**
+     * Variable privada: asociada al usuario generada automáticamente.
+     */
     private String clave;
     
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Usuario
+     */  
     @EJB
     private UsuarioFacade usuarioFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Puestos de control
+     */  
     @EJB
     private PuestoControlFacade puestoFacade;
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Paramétrica
+     */  
     @EJB
     private ParametricaFacade paramFacade; 
+    
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Tipos de paramétrica
+     */  
     @EJB
     private TipoParamFacade tipoParamFacade;
     
+    
     // campos y recursos para el envío de correos al usuario
+    /**
+     * Variable privada: sesión de mail del servidor
+     */
     @Resource(mappedName ="java:/mail/ambientePrueba")    
     private Session mailSesion;
+    
+    /**
+     * Variable privada: String mensajeValidar a enviar por correo electrónico
+     */  
     private Message mensaje; 
     
+    /**
+     * Constructor
+     */
     public MbUsuario() {
     }
 
@@ -140,6 +205,9 @@ public class MbUsuario {
     /******************************
      * Mátodos de inicialización **
      ******************************/
+    /**
+     * Método que inicializa el bean
+     */
     @PostConstruct
     public void init(){
         usuario = new Usuario();
@@ -151,7 +219,7 @@ public class MbUsuario {
 
     /**
      * Método para guardar el Usuario, sea inserción o edición.
-     * Previa validación
+     * Previa validación. Envía correo con las credenciales de acceso
      */
     public void save(){
         boolean valida = true;
@@ -286,7 +354,8 @@ public class MbUsuario {
      *********************/
 
     /**
-     * Método para cargar el listado de Puestos de control como EntidadCombo 
+     * Método para cargar el listado de Puestos de control como EntidadCombo.
+     * Utilizado por getLstPuestos()
      */    
     private void cargarPuestos() {
         List<PuestoControl> lstPuestosControl;
@@ -307,57 +376,59 @@ public class MbUsuario {
     }
 
     /**
-     * Método para validar los datos del Usuario
-     * @return 
+     * Método para validar los datos del Usuario.
+     * Utilizado por save()
+     * @return String mensaje de validación
      */
     private String validarDatos() {
-        String mensaje = "";
+        String mensajeValidar = "";
         if(Objects.equals(usuario.getLogin(), Long.valueOf(0))){
-            mensaje = "Debe ingresar el DNI del Usuario.";
+            mensajeValidar = "Debe ingresar el DNI del Usuario.";
         }
         if(!String.valueOf(usuario.getLogin()).matches("[0-9]*")){
-            if(mensaje.equals("")){
-                mensaje = "El DNI solo debe contener números, sin '-' ni '.'";
+            if(mensajeValidar.equals("")){
+                mensajeValidar = "El DNI solo debe contener números, sin '-' ni '.'";
             }else{
-                mensaje = mensaje + " " + "El DNI solo debe contener números, sin '-' ni '.'";
+                mensajeValidar = mensajeValidar + " " + "El DNI solo debe contener números, sin '-' ni '.'";
             }
         }
         if(usuario.getNombreCompleto() == null){
-            if(mensaje.equals("")){
-                mensaje = "Debe ingresar el Nombre completo del Usuario.";
+            if(mensajeValidar.equals("")){
+                mensajeValidar = "Debe ingresar el Nombre completo del Usuario.";
             }else{
-                mensaje = mensaje + " " + "Debe ingresar Nombre completo del Usuario.";
+                mensajeValidar = mensajeValidar + " " + "Debe ingresar Nombre completo del Usuario.";
             }
         }else{
             String nombre = usuario.getNombreCompleto().toUpperCase();
             usuario.setNombreCompleto(nombre);
         }
         if(idPuesto == 0 && usuario.getRol().getNombre().equals(ResourceBundle.getBundle("/Config").getString("Operativo"))){
-            if(mensaje.equals("")){
-                mensaje = "Debe seleccionar el Puesto de Control del Usuario.";
+            if(mensajeValidar.equals("")){
+                mensajeValidar = "Debe seleccionar el Puesto de Control del Usuario.";
             }else{
-                mensaje = mensaje + " " + "Debe selecciónar el Puesto de Control del Usuario.";
+                mensajeValidar = mensajeValidar + " " + "Debe selecciónar el Puesto de Control del Usuario.";
             }
         }else if(idPuesto > 0){
             // seteo el puesto
             usuario.setPuestoControl(puestoFacade.find(Long.valueOf(idPuesto)));
         }
         if(idRol == 0){
-            if(mensaje.equals("")){
-                mensaje = "Debe seleccionar el Rol del Usuario.";
+            if(mensajeValidar.equals("")){
+                mensajeValidar = "Debe seleccionar el Rol del Usuario.";
             }else{
-                mensaje = mensaje + " " + "Debe seleccionar el Rol del Usuario.";
+                mensajeValidar = mensajeValidar + " " + "Debe seleccionar el Rol del Usuario.";
             }
         }else{
             // seteo el rol
             usuario.setRol(paramFacade.find(Long.valueOf(idRol)));
         }
             
-        return mensaje;
+        return mensajeValidar;
     }
 
     /**
-     * Método para cargar el listado de Roles de Usuario como EntidadCombo 
+     * Método para cargar el listado de Roles de Usuario como EntidadCombo.
+     * Utilizado por getLstRoles()
      */
     private void cargarRoles() {
         TipoParam tipo = tipoParamFacade.getExistente(ResourceBundle.getBundle("/Config").getString("RolUsuarios"));
@@ -380,7 +451,8 @@ public class MbUsuario {
 
     /**
      * Método para enviar un correo al Usuario creado con las correspondientes credenciales de acceso.
-     * @return 
+     * Utilizado por save()
+     * @return boolean true o false según el resultado del envío
      */
     private boolean enviarCorreo() {
         boolean result;

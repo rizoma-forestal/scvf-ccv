@@ -8,15 +8,19 @@ import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.LocalidadClien
 import ar.gob.ambiente.sacvefor.controlverificacion.territ.client.ProvinciaClient;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.EntidadCombo;
 import ar.gob.ambiente.sacvefor.controlverificacion.util.JsfUtil;
+import ar.gob.ambiente.sacvefor.controlverificacion.util.Token;
 import ar.gob.ambiente.sacvefor.servicios.territorial.CentroPoblado;
 import ar.gob.ambiente.sacvefor.servicios.territorial.Departamento;
 import ar.gob.ambiente.sacvefor.servicios.territorial.Provincia;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -27,26 +31,101 @@ import org.apache.log4j.Logger;
  */
 public class MbPuestoControl {
 
+    /**
+     * Variable privada: Puesto de control gestionado
+     */
     private PuestoControl puestoControl;
+    
+    /**
+     * Variable privada: Listado de puestos de control registrados
+     */
     private List<PuestoControl> lstPuestos;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán las provincias
+     */
     private List<EntidadCombo> lstProv;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán los departamentos
+     */
     private List<EntidadCombo> lstDeptos;
+    
+    /**
+     * Variable privada: Listado de entidades combo que en este caso guardarán las localidades
+     */
     private List<EntidadCombo> lstLocalidades;
+    
+    /**
+     * Variable privada: UsuarioClient Cliente para la API REST de Territorial
+     */
+    private ar.gob.ambiente.sacvefor.controlverificacion.territ.client.UsuarioClient usuarioClientTerr;
+    
+    /**
+     * Variable privada: Token obtenido al validar el usuario de la API Territorial
+     */ 
+    private Token tokenTerr;
+    
+    /**
+     * Variable privada: Token en formato String del obtenido al validar el usuario de la API Territorial
+     */ 
+    private String strTokenTerr;  
+    
+    /**
+     * Variable privada: identificador de Localidad en la API territorial
+     */    
     private int idLocGt;
+    
+    /**
+     * Variable privada: identificador del Departamento en la API territorial
+     */   
     private int idDeptoGt;
+    
+    /**
+     * Variable privada: identificador de Localidad en la API territorial
+     */   
     private int idProvGt;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de una vista detalle
+     */  
     private boolean view;
+    
+    /**
+     * Variable privada: flag que indica si el formulario es de edición
+     */ 
     private boolean edit;
+    
+    /**
+     * Variable privada: Logger para escribir en el log del server
+     */ 
     static final Logger LOG = Logger.getLogger(MbPuestoControl.class);
     
     // Clientes REST para la gestión del API Territorial
+    /**
+     * Variable privada: ProvinciaClient Cliente para la API REST Territorial para Provincias
+     */
     private ProvinciaClient provClient;  
+    
+    /**
+     * Variable privada: ProvinciaClient Cliente para la API REST Territorial para Departamentos
+     */
     private DepartamentoClient deptoClient;
+    
+    /**
+     * Variable privada: ProvinciaClient Cliente para la API REST Territorial para Localidades
+     */
     private LocalidadClient localClient;
     
+    /**
+     * Variable privada: EJB inyectado para el acceso a datos de Puestos de control
+     */
     @EJB
     private PuestoControlFacade puestoFacade;
     
+    /**
+     * Constructor
+     */
     public MbPuestoControl() {
     }
 
@@ -134,6 +213,10 @@ public class MbPuestoControl {
     /******************************
      * Mátodos de inicialización **
      ******************************/
+    
+    /**
+     * Método que inicializa el bean, setea las entidades a gestionar y carga el listado de provincias
+     */       
     @PostConstruct
     public void init(){
         puestoControl = new PuestoControl();
@@ -299,18 +382,29 @@ public class MbPuestoControl {
      *********************/
     
     /**
-     * Método para cargar el listado de Provincias para su selección
+     * Método para cargar el listado de Provincias para su selección.
+     * Utilizado en init()
      */
     private void cargarProvincias() {
         EntidadCombo provincia;
         List<Provincia> listSrv;
         
         try{
+            // instancio el cliente para la selección del Departamento TERR, obtengo el token si no está seteado o está vencido
+            if(tokenTerr == null){
+                getTokenTerr();
+            }else try {
+                if(!tokenTerr.isVigente()){
+                    getTokenTerr();
+                }
+            } catch (IOException ex) {
+                LOG.fatal("Hubo un error obteniendo la vigencia del token Territorial. " + ex.getMessage());
+            }            
             // instancio el cliente para la selección de las provincias
             provClient = new ProvinciaClient();
             // obtengo el listado de provincias 
             GenericType<List<Provincia>> gType = new GenericType<List<Provincia>>() {};
-            Response response = provClient.findAll_JSON(Response.class);
+            Response response = provClient.findAll_JSON(Response.class, tokenTerr.getStrToken());
             listSrv = response.readEntity(gType);
             // lleno el list con las provincias como un objeto Entidad Servicio
             lstProv = new ArrayList<>();
@@ -331,19 +425,30 @@ public class MbPuestoControl {
     }      
     
     /**
-     * Método que carga el listado de Departamentos según la Provincia seleccionada
-     * @param id 
+     * Método que carga el listado de Departamentos según la Provincia seleccionada.
+     * Utilizado en provinciaChangeListener()
+     * @param id Long identificador de la Provincia en la API Territorial
      */
     private void getDepartamentosSrv(int idProv) {
         EntidadCombo depto;
         List<Departamento> listSrv;
         
         try{
+            // instancio el cliente para la selección del Departamento TERR, obtengo el token si no está seteado o está vencido
+            if(tokenTerr == null){
+                getTokenTerr();
+            }else try {
+                if(!tokenTerr.isVigente()){
+                    getTokenTerr();
+                }
+            } catch (IOException ex) {
+                LOG.fatal("Hubo un error obteniendo la vigencia del token Territorial. " + ex.getMessage());
+            }            
             // instancio el cliente para la selección de los Departamentos
             provClient = new ProvinciaClient();
             // obtngo el listado
             GenericType<List<Departamento>> gType = new GenericType<List<Departamento>>() {};
-            Response response = provClient.findByProvincia_JSON(Response.class, String.valueOf(idProv));
+            Response response = provClient.findByProvincia_JSON(Response.class, String.valueOf(idProv), tokenTerr.getStrToken());
             listSrv = response.readEntity(gType);
             // lleno el listado de los combos
             lstDeptos = new ArrayList<>();
@@ -361,19 +466,30 @@ public class MbPuestoControl {
     }    
     
     /**
-     * Método que carga el listado de Localidades según el Departamento seleccionado
-     * @param id 
+     * Método que carga el listado de Localidades según el Departamento seleccionado.
+     * Utilizado en deptoChangeListener()
+     * @param id Long identificador del Departamento en la API Territorial
      */    
     private void getLocalidadesSrv(int idDepto) {
         EntidadCombo local;
         List<CentroPoblado> listSrv;
         
         try{
+            // instancio el cliente para la selección del Departamento TERR, obtengo el token si no está seteado o está vencido
+            if(tokenTerr == null){
+                getTokenTerr();
+            }else try {
+                if(!tokenTerr.isVigente()){
+                    getTokenTerr();
+                }
+            } catch (IOException ex) {
+                LOG.fatal("Hubo un error obteniendo la vigencia del token Territorial. " + ex.getMessage());
+            }
             // instancio el cliente para la selección de las Localidades
             deptoClient = new DepartamentoClient();
             // obtngo el listado
             GenericType<List<CentroPoblado>> gType = new GenericType<List<CentroPoblado>>() {};
-            Response response = deptoClient.findByDepto_JSON(Response.class, String.valueOf(idDepto));
+            Response response = deptoClient.findByDepto_JSON(Response.class, String.valueOf(idDepto), tokenTerr.getStrToken());
             listSrv = response.readEntity(gType);
             // lleno el listado de los combos
             lstLocalidades = new ArrayList<>();
@@ -391,15 +507,26 @@ public class MbPuestoControl {
     }  
     
     /**
-     * Método para cargar los listados, para actualizar la Localidad del Puesto de control
+     * Método para cargar los listados, para actualizar la Localidad del Puesto de control.
+     * Utilizado en prepareEdit()
      */
     private void cargarEntidadesTerr(int idLocalidad){
         CentroPoblado cp;
         
         try{
+            // instancio el cliente para la selección del Departamento TERR, obtengo el token si no está seteado o está vencido
+            if(tokenTerr == null){
+                getTokenTerr();
+            }else try {
+                if(!tokenTerr.isVigente()){
+                    getTokenTerr();
+                }
+            } catch (IOException ex) {
+                LOG.fatal("Hubo un error obteniendo la vigencia del token Territorial. " + ex.getMessage());
+            }
             // instancio el cliente para la selección de las provincias
             localClient = new LocalidadClient();
-            cp = localClient.find_JSON(CentroPoblado.class, String.valueOf(idLocalidad));
+            cp = localClient.find_JSON(CentroPoblado.class, String.valueOf(idLocalidad), tokenTerr.getStrToken());
             // cierro el cliente
             localClient.close();
             // instancio los id territoriales
@@ -420,8 +547,9 @@ public class MbPuestoControl {
     }     
 
     /**
-     * Método para validar los datos obligatorios
-     * @return 
+     * Método para validar los datos obligatorios.
+     * Utilizado en save()
+     * @return String mensaje de validación
      */
     private String validarDatos() {
         String mensaje = "";
@@ -452,4 +580,23 @@ public class MbPuestoControl {
         
         return mensaje;
     }
+    
+    /**
+     * Método privado que obtiene y setea el token para autentificarse ante la API rest de Territorial
+     * Crea el campo de tipo Token con la clave recibida y el momento de la obtención.
+     * Utilizado por cargarEntidadesTerr(), getLocalidadesSrv(), getDepartamentosSrv() y cargarProvincias()
+     */
+    private void getTokenTerr(){
+        try{
+            usuarioClientTerr = new ar.gob.ambiente.sacvefor.controlverificacion.territ.client.UsuarioClient();
+            Response responseUs = usuarioClientTerr.authenticateUser_JSON(Response.class, ResourceBundle.getBundle("/Config").getString("UsRestTerr"));
+            MultivaluedMap<String, Object> headers = responseUs.getHeaders();
+            List<Object> lstHeaders = headers.get("Authorization");
+            strTokenTerr = (String)lstHeaders.get(0); 
+            tokenTerr = new Token(strTokenTerr, System.currentTimeMillis());
+            usuarioClientTerr.close();
+        }catch(ClientErrorException ex){
+            System.out.println("Hubo un error obteniendo el token para la API Terr: " + ex.getMessage());
+        }
+    }     
 }
